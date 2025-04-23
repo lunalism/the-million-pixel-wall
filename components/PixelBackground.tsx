@@ -6,13 +6,28 @@
  * 디지털 느낌의 배경을 자연스럽게 생성합니다.
  */
 
+import { useEffect, useState } from "react";
+
+type Pixel = {
+  left: string;
+  top: string;
+  size: number;
+  opacity: number;
+};
+
 export default function PixelBackground() {
-    const pixels = Array.from({ length: 50 }, () => ({
-      left: Math.random() * 100 + '%',
-      top: Math.random() * 100 + '%',
-      size: Math.floor(Math.random() * 16) + 4, // 4 ~ 20px
-      opacity: Math.random() * 0.1 + 0.05,
-    }))
+    const [pixels, setPixels] = useState<Pixel[]>([]);
+
+    useEffect(() => {
+      const generated = Array.from({ length: 50 }, () => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        size: Math.floor(Math.random() * 16) + 4,
+        opacity: Math.random() * 0.1 + 0.05,
+      }));
+
+      setPixels(generated);
+    }, []);
   
     return (
       <div className="absolute inset-0">
@@ -30,6 +45,6 @@ export default function PixelBackground() {
           />
         ))}
       </div>
-    )
+    );
   }
   
