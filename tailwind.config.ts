@@ -6,11 +6,12 @@ const config: Config = {
       fontFamily: {
         sans: ['Pretendard', 'sans-serif'],
       },
-    },
+    }
   },
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./styles/**/*.{css}" // ✅ 이 줄 추가!!
   ],
   plugins: [],
 };
