@@ -15,7 +15,7 @@
 
 export default function HeroSection() {
     return (
-      <section className="w-full bg-neutral-900 text-white py-20 px-6 text-center relative overflow-hidden">
+      <section className="relative w-full bg-neutral-900 text-white py-20 px-6 text-center bg-pixel-pattern">
         {/* 배경 픽셀 느낌 그리드 효과 (추후 구현 가능) */}
         
         {/* 메인 타이틀 */}
