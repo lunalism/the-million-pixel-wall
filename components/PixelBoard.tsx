@@ -27,6 +27,7 @@ export default function PixelBoard() {
   useEffect(() => {
     async function loadPixels() {
       const data = await fetchPixels();
+      console.log("📦 픽셀 데이터:", data);
       setPixels(data);
     }
     loadPixels();
@@ -34,7 +35,8 @@ export default function PixelBoard() {
 
   return (
     <div
-      className="relative w-full h-[600px] bg-neutral-900"
+      className="relative w-full h-[600px] bg-blue-gray-50"
+      style={{ backgroundColor: "#FFD1C1" }}
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
         setMousePos({
