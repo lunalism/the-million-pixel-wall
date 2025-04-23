@@ -13,10 +13,15 @@
 
 'use client'
 
+import PixelBackground from "@/components/PixelBackground";
+
 export default function HeroSection() {
     return (
-      <section className="relative w-full bg-neutral-900 text-white py-20 px-6 text-center bg-pixel-pattern">
-        {/* 배경 픽셀 느낌 그리드 효과 (추후 구현 가능) */}
+      <section className="relative w-full bg-neutral-900 text-white py-20 px-6 text-center overflow-hidden">
+        {/* 랜덤 픽셀 배경 레이어 */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <PixelBackground />
+        </div>
         
         {/* 메인 타이틀 */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
