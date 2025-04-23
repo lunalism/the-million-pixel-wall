@@ -2,60 +2,60 @@
 
 /**
  * PixelBoard
- * 픽셀 인터랙션의 핵심 그리드입니다.
- * 현재는 40 x 20 픽셀의 더미 인터랙션 UI만 구성되어 있으며,
- * 추후 Supabase에서 데이터를 불러와서 각각의 픽셀 상태를 동적으로 표시할 예정입니다.
- * 
- * 각 픽셀은 기본 색상으로 표시되며,
- * Hover 시 테두리 강조 / 클릭 시 콘솔에 위치 출력 등의 기능이 있습니다.
+ * Supabase에서 불러온 픽셀 정보를 기반으로
+ * 이미지 오버레이 및 툴팁을 표시하는 메인 보드입니다.
  */
 
 'use client'
 
 import { useEffect, useState } from "react"
-import { fetchPixels, Pixel } from "@/lib/fetchPixels";
-import PixelTooltip from "./PixelTooltip"; // 툴팁 컴포넌트 가져오기
+import { fetchPixels, Pixel } from "@/lib/fetchPixels"
+import PixelTooltip from "./PixelTooltip"
+import PixelImageLayer from "./PixelImageLayer"
 
 const PIXEL_SIZE = 10 // px
 
 export default function PixelBoard() {
-  const [pixels, setPixels] = useState<Pixel[]>([]);
-  const [hoveredPixel, setHoveredPixel] = useState<Pixel | null>(null);
-  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [pixels, setPixels] = useState<Pixel[]>([])
+  const [hoveredPixel, setHoveredPixel] = useState<Pixel | null>(null)
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
-  // 🚀 Supabase에서 픽셀 데이터 가져오기
+  // Supabase에서 픽셀 데이터 가져오기
   useEffect(() => {
     async function loadPixels() {
-      const data = await fetchPixels();
-      console.log("📦 픽셀 데이터:", data);
-      setPixels(data);
+      const data = await fetchPixels()
+      console.log("📦 픽셀 데이터:", data)
+      setPixels(data)
     }
-    loadPixels();
-  }, []);
+    loadPixels()
+  }, [])
 
   return (
     <div
-      className="relative w-full h-[600px] bg-blue-gray-50"
-      style={{ backgroundColor: "#FFD1C1" }}
+      className="relative w-full h-[600px]"
+      style={{ backgroundColor: "#FFD1C1" }} // 팬톤 2025 색상
       onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
+        const rect = e.currentTarget.getBoundingClientRect()
         setMousePos({
           x: e.clientX - rect.left,
           y: e.clientY - rect.top,
-        });
+        })
       }}
     >
-      {/* 📦 DB에서 불러온 픽셀 이미지/색 블록 */}
+      {/* 🖼 이미지 오버레이 (픽셀 위에 덮임) */}
+      <PixelImageLayer pixels={pixels} />
+
+      {/* 📦 픽셀 영역 블록 (투명 배경 or 테두리만) */}
       {pixels.map((pixel) => (
         <div
           key={pixel.id}
-          className="absolute bg-white hover:bg-blue-500 transition-all duration-150"
+          className="absolute border border-white hover:border-blue-500 transition-all duration-150"
           style={{
             left: pixel.x * PIXEL_SIZE,
             top: pixel.y * PIXEL_SIZE,
             width: pixel.width * PIXEL_SIZE,
             height: pixel.height * PIXEL_SIZE,
-            opacity: 0.9,
+            backgroundColor: "transparent",
           }}
           onMouseEnter={() => setHoveredPixel(pixel)}
           onMouseLeave={() => setHoveredPixel(null)}
@@ -72,5 +72,5 @@ export default function PixelBoard() {
         />
       )}
     </div>
-  );
+  )
 }
