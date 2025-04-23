@@ -12,61 +12,62 @@
 
 'use client'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { fetchPixels, Pixel } from "@/lib/fetchPixels";
 import PixelTooltip from "./PixelTooltip"; // 툴팁 컴포넌트 가져오기
 
-const ROWS = 20
-const COLS = 40
 const PIXEL_SIZE = 10 // px
 
 export default function PixelBoard() {
-  const [hovered, setHovered] = useState<{ x: number; y: number } | null>(null);
+  const [pixels, setPixels] = useState<Pixel[]>([]);
+  const [hoveredPixel, setHoveredPixel] = useState<Pixel | null>(null);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // 🚀 Supabase에서 픽셀 데이터 가져오기
+  useEffect(() => {
+    async function loadPixels() {
+      const data = await fetchPixels();
+      console.log("📦 픽셀 데이터:", data);
+      setPixels(data);
+    }
+    loadPixels();
+  }, []);
 
   return (
     <div
-      className="flex flex-col items-center py-10 relative"
+      className="relative w-full h-[600px] bg-blue-gray-50"
+      style={{ backgroundColor: "#FFD1C1" }}
       onMouseMove={(e) => {
-        const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+        const rect = e.currentTarget.getBoundingClientRect();
         setMousePos({
           x: e.clientX - rect.left,
           y: e.clientY - rect.top,
         });
       }}
     >
-      {/* 픽셀 그리드 */}
-      <div
-        className="grid"
-        style={{
-          gridTemplateColumns: `repeat(${COLS}, ${PIXEL_SIZE}px)`,
-          gap: "2px",
-        }}
-      >
-        {[...Array(ROWS)].flatMap((_, row) =>
-          [...Array(COLS)].map((_, col) => {
-            const isHovered = hovered?.x === col && hovered?.y === row;
+      {/* 📦 DB에서 불러온 픽셀 이미지/색 블록 */}
+      {pixels.map((pixel) => (
+        <div
+          key={pixel.id}
+          className="absolute bg-white hover:bg-blue-500 transition-all duration-150"
+          style={{
+            left: pixel.x * PIXEL_SIZE,
+            top: pixel.y * PIXEL_SIZE,
+            width: pixel.width * PIXEL_SIZE,
+            height: pixel.height * PIXEL_SIZE,
+            opacity: 0.9,
+          }}
+          onMouseEnter={() => setHoveredPixel(pixel)}
+          onMouseLeave={() => setHoveredPixel(null)}
+        />
+      ))}
 
-            return (
-              <div
-                key={`${row}-${col}`}
-                className={`w-[10px] h-[10px] cursor-pointer transition-all duration-100 ${
-                  isHovered ? "bg-blue-500" : "bg-neutral-400"
-                }`}
-                onMouseEnter={() => setHovered({ x: col, y: row })}
-                onMouseLeave={() => setHovered(null)}
-                onClick={() => console.log(`🧱 Clicked pixel at [${col}, ${row}]`)}
-              />
-            );
-          })
-        )}
-      </div>
-
-      {/* 툴팁 표시 */}
-      {hovered && (
+      {/* 🧩 툴팁 */}
+      {hoveredPixel && (
         <PixelTooltip
-          name="Chrisholic"
-          message="Building the wall of the internet."
-          date="2025-04-23"
+          name={hoveredPixel.name}
+          message={hoveredPixel.message}
+          date={hoveredPixel.created_at.split("T")[0]}
           position={mousePos}
         />
       )}
