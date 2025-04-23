@@ -17,7 +17,7 @@ import PixelBackground from "@/components/PixelBackground";
 
 export default function HeroSection() {
     return (
-      <section className="relative w-full bg-neutral-900 text-white py-20 px-6 text-center overflow-hidden">
+      <section className="relative w-full bg-neutral-800 text-white py-20 px-6 text-center overflow-hidden">
         {/* 랜덤 픽셀 배경 레이어 */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <PixelBackground />

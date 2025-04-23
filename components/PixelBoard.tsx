@@ -32,8 +32,8 @@ export default function PixelBoard() {
 
   return (
     <div
-      className="relative w-full h-[600px]"
-      style={{ backgroundColor: "#FFD1C1" }} // 팬톤 2025 색상
+      className="relative w-full h-[800px]"
+      style={{ backgroundColor: "#D8A39D" }} // 팬톤 2025 색상
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
         setMousePos({
