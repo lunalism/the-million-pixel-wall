@@ -3,11 +3,15 @@
 전설의 [Million Dollar Homepage](http://www.milliondollarhomepage.com/)의 20주년을 기념하는 오마주 프로젝트.  
 100만 픽셀로 구성된 디지털 벽에 당신만의 이미지를 올리고, 링크를 남기고, 인터넷에 새로운 흔적을 남겨보세요.
 
+📘 [English](./README.md) | 🇰🇷 [한국어](./README.ko.md)
+
 ---
 
 ## 🌐 데모
 
-🚧 준비 중입니다...
+> Claim your pixel. Leave your mark.
+
+![The Million Pixel Wall Screenshot](./public/screenshot.png)
 
 ---
 
