@@ -13,16 +13,28 @@
 'use client'
 
 import { useState } from "react"
+import PixelTooltip from "./PixelTooltip"; // 툴팁 컴포넌트 가져오기
 
 const ROWS = 20
 const COLS = 40
 const PIXEL_SIZE = 10 // px
 
 export default function PixelBoard() {
-  const [hovered, setHovered] = useState<{ x: number; y: number } | null>(null)
+  const [hovered, setHovered] = useState<{ x: number; y: number } | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   return (
-    <div className="flex flex-col items-center py-10">
+    <div
+      className="flex flex-col items-center py-10 relative"
+      onMouseMove={(e) => {
+        const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+        setMousePos({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      }}
+    >
+      {/* 픽셀 그리드 */}
       <div
         className="grid"
         style={{
@@ -32,7 +44,7 @@ export default function PixelBoard() {
       >
         {[...Array(ROWS)].flatMap((_, row) =>
           [...Array(COLS)].map((_, col) => {
-            const isHovered = hovered?.x === col && hovered?.y === row
+            const isHovered = hovered?.x === col && hovered?.y === row;
 
             return (
               <div
@@ -44,16 +56,20 @@ export default function PixelBoard() {
                 onMouseLeave={() => setHovered(null)}
                 onClick={() => console.log(`🧱 Clicked pixel at [${col}, ${row}]`)}
               />
-            )
+            );
           })
         )}
       </div>
 
+      {/* 툴팁 표시 */}
       {hovered && (
-        <div className="mt-4 text-sm text-neutral-500">
-          Hovered: <span className="text-white">[{hovered.x}, {hovered.y}]</span>
-        </div>
+        <PixelTooltip
+          name="Chrisholic"
+          message="Building the wall of the internet."
+          date="2025-04-23"
+          position={mousePos}
+        />
       )}
     </div>
-  )
+  );
 }
