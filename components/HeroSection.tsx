@@ -35,7 +35,7 @@ export default function HeroSection() {
   
         {/* CTA 버튼 */}
         <button
-          className="mt-8 inline-block bg-blue-600 hover:bg-blue-700 transition-colors px-6 py-3 rounded-md text-white font-medium text-sm sm:text-base shadow"
+          className="mt-8 inline-block bg-[#34568B] hover:bg-[#2c4671] transition-colors px-6 py-3 rounded-md text-white font-medium text-sm sm:text-base shadow"
           onClick={() => alert("📧 알림 신청 기능은 추후 연결됩니다.")}
         >
           Notify Me
