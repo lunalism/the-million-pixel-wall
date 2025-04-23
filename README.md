@@ -9,7 +9,9 @@ Own a piece of the pixel wall, upload your image, and leave your mark on the int
 
 ## 🌐 Demo
 
-🚧 Coming Soon...
+> Claim your pixel. Leave your mark.
+
+![The Million Pixel Wall Screenshot](./public/screenshot.png)
 
 ---
 
