@@ -11,6 +11,8 @@
  * 이 영역은 가장 첫 인상을 주는 부분이므로 강한 브랜드 톤을 담는 것이 중요합니다.
  */
 
+'use client'
+
 export default function HeroSection() {
     return (
       <section className="w-full bg-neutral-900 text-white py-20 px-6 text-center relative overflow-hidden">
@@ -18,8 +20,7 @@ export default function HeroSection() {
         
         {/* 메인 타이틀 */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
-          THE MILLION <br className="hidden sm:inline-block" />
-          PIXEL WALL
+          THE MILLION PIXEL WALL
         </h1>
   
         {/* 서브 타이틀 */}
