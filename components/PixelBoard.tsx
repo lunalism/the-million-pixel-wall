@@ -10,43 +10,50 @@
 
 import { useEffect, useState } from "react"
 import { fetchPixels, Pixel } from "@/lib/fetchPixels"
-import PixelTooltip from "./PixelTooltip"
 import PixelImageLayer from "./PixelImageLayer"
+import PixelTooltip from "./PixelTooltip"
+import BuyPixelFormModal from "./BuyPixelFormModal"
 
+// 캔버스의 논리적 너비 및 높이 (픽셀 단위)
 const LOGICAL_WIDTH = 1500
 const LOGICAL_HEIGHT = 1000
-const PIXEL_SIZE = 10 // px
+const PIXEL_SIZE = 10 // 화면상 한 픽셀의 크기 (10px)
 
 export default function PixelBoard() {
+  // Supabase에서 가져온 구매된 픽셀 데이터
   const [pixels, setPixels] = useState<Pixel[]>([])
-  const [hoveredPixel, setHoveredPixel] = useState<Pixel | null>(null)
-  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 
-  // Supabase에서 픽셀 데이터 가져오기
+  // 마우스 오버 중인 픽셀 (툴팁 표시용)
+  const [hoveredPixel, setHoveredPixel] = useState<Pixel | null>(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+
+  // 모달 열기용 상태 (선택한 픽셀 위치 및 열림 여부)
+  const [selectedPixel, setSelectedPixel] = useState<{ x: number; y: number } | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // Supabase에서 픽셀 데이터 불러오기
   useEffect(() => {
-    async function loadPixels() {
+    async function load() {
       const data = await fetchPixels()
-      console.log("📦 픽셀 데이터:", data)
       setPixels(data)
     }
-    loadPixels()
+    load()
   }, [])
 
-  // 전체 논리 픽셀 범위를 10px 단위로 나눠서 그리드 생성
   const columns = LOGICAL_WIDTH / PIXEL_SIZE
   const rows = LOGICAL_HEIGHT / PIXEL_SIZE
 
   return (
-    // 전체 화면 - 배경색 & 가운데 정렬
+    // 전체 페이지 영역: 가운데 정렬된 픽셀 보드
     <div className="w-full min-h-screen bg-neutral-800 flex justify-center items-start py-10">
-      {/* 픽셀 보드 컨테이너 */}
       <div
         className="relative"
         style={{
           width: LOGICAL_WIDTH,
           height: LOGICAL_HEIGHT,
-          backgroundColor: "#D68A59", // Canyon Clay
+          backgroundColor: "#D68A59", // 픽셀 보드 배경색 (Canyon Clay)
         }}
+        // 마우스 위치 추적 (툴팁 위치 계산용)
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect()
           setMousePos({
@@ -55,15 +62,16 @@ export default function PixelBoard() {
           })
         }}
       >
-        {/* 🖼 이미지 오버레이 */}
+        {/* 이미지 오버레이: 구매된 픽셀에 이미지 렌더 */}
         <PixelImageLayer pixels={pixels} />
 
-        {/* 🧱 전체 빈 픽셀 그리드 */}
+        {/* 빈 픽셀 렌더링: 구매되지 않은 위치 표시 */}
         {[...Array(rows)].flatMap((_, y) =>
           [...Array(columns)].map((_, x) => {
             const pixelX = x * PIXEL_SIZE
             const pixelY = y * PIXEL_SIZE
 
+            // 해당 위치가 구매된 픽셀인지 확인
             const purchased = pixels.find(
               (p) =>
                 x >= p.x &&
@@ -72,7 +80,7 @@ export default function PixelBoard() {
                 y < p.y + p.height
             )
 
-            if (purchased) return null
+            if (purchased) return null // 구매된 경우 빈 박스를 렌더하지 않음
 
             return (
               <div
@@ -84,22 +92,33 @@ export default function PixelBoard() {
                   width: PIXEL_SIZE,
                   height: PIXEL_SIZE,
                 }}
+                // 빈 픽셀 클릭 시 구매 폼 열기
                 onClick={() => {
-                  // 💬 구매 폼 호출
-                  console.log(`🛒 구매 폼 열기 at (${x}, ${y})`)
+                  setSelectedPixel({ x, y })
+                  setIsModalOpen(true)
                 }}
               />
             )
           })
         )}
 
-        {/* 💬 툴팁 */}
+        {/* 툴팁: 마우스 오버된 픽셀 정보 표시 */}
         {hoveredPixel && (
           <PixelTooltip
             name={hoveredPixel.name}
             message={hoveredPixel.message}
             date={hoveredPixel.created_at.split("T")[0]}
             position={mousePos}
+          />
+        )}
+
+        {/* 구매 폼 모달 렌더링 */}
+        {selectedPixel && (
+          <BuyPixelFormModal
+            x={selectedPixel.x}
+            y={selectedPixel.y}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
           />
         )}
       </div>
