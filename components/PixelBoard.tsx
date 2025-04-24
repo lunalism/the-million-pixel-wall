@@ -37,70 +37,72 @@ export default function PixelBoard() {
   const rows = LOGICAL_HEIGHT / PIXEL_SIZE
 
   return (
-    <div
-      className="relative w-full overflow-auto"
-      style={{
-        width: LOGICAL_WIDTH,
-        height: LOGICAL_HEIGHT,
-        backgroundColor: "#D68A59", // Canyon Clay 배경
-      }}
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect()
-        setMousePos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        })
-      }}
-    >
-      {/* 🖼️ 구매된 픽셀 위에 이미지 오버레이 */}
-      <PixelImageLayer pixels={pixels} />
+    // 전체 화면 - 배경색 & 가운데 정렬
+    <div className="w-full min-h-screen bg-neutral-800 flex justify-center items-start py-10">
+      {/* 픽셀 보드 컨테이너 */}
+      <div
+        className="relative"
+        style={{
+          width: LOGICAL_WIDTH,
+          height: LOGICAL_HEIGHT,
+          backgroundColor: "#D68A59", // Canyon Clay
+        }}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect()
+          setMousePos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+          })
+        }}
+      >
+        {/* 🖼 이미지 오버레이 */}
+        <PixelImageLayer pixels={pixels} />
 
-      {/* 🧱 전체 그리드 렌더링 (빈 픽셀 표시) */}
-      {[...Array(rows)].flatMap((_, y) =>
-        [...Array(columns)].map((_, x) => {
-          const pixelX = x * PIXEL_SIZE
-          const pixelY = y * PIXEL_SIZE
+        {/* 🧱 전체 빈 픽셀 그리드 */}
+        {[...Array(rows)].flatMap((_, y) =>
+          [...Array(columns)].map((_, x) => {
+            const pixelX = x * PIXEL_SIZE
+            const pixelY = y * PIXEL_SIZE
 
-          // 해당 픽셀이 구매되었는지 확인
-          const purchased = pixels.find(
-            (p) =>
-              x >= p.x &&
-              x < p.x + p.width &&
-              y >= p.y &&
-              y < p.y + p.height
-          )
+            const purchased = pixels.find(
+              (p) =>
+                x >= p.x &&
+                x < p.x + p.width &&
+                y >= p.y &&
+                y < p.y + p.height
+            )
 
-          // 구매된 픽셀은 이미지로 표시되므로 여기선 렌더 안 함
-          if (purchased) return null
+            if (purchased) return null
 
-          return (
-            <div
-              key={`empty-${x}-${y}`}
-              className="absolute border border-white/10 hover:border-blue-400 transition-colors cursor-pointer"
-              style={{
-                left: pixelX,
-                top: pixelY,
-                width: PIXEL_SIZE,
-                height: PIXEL_SIZE,
-              }}
-              onClick={() => {
-                // 💬 향후 구매 폼 열기 함수 연결 예정
-                console.log(`🛒 Empty pixel clicked at [${x}, ${y}]`)
-              }}
-            />
-          )
-        })
-      )}
+            return (
+              <div
+                key={`empty-${x}-${y}`}
+                className="absolute border border-white/10 hover:border-blue-400 cursor-pointer transition-colors"
+                style={{
+                  left: pixelX,
+                  top: pixelY,
+                  width: PIXEL_SIZE,
+                  height: PIXEL_SIZE,
+                }}
+                onClick={() => {
+                  // 💬 구매 폼 호출
+                  console.log(`🛒 구매 폼 열기 at (${x}, ${y})`)
+                }}
+              />
+            )
+          })
+        )}
 
-      {/* 💬 툴팁 (구매된 픽셀 hover 시 표시) */}
-      {hoveredPixel && (
-        <PixelTooltip
-          name={hoveredPixel.name}
-          message={hoveredPixel.message}
-          date={hoveredPixel.created_at.split("T")[0]}
-          position={mousePos}
-        />
-      )}
+        {/* 💬 툴팁 */}
+        {hoveredPixel && (
+          <PixelTooltip
+            name={hoveredPixel.name}
+            message={hoveredPixel.message}
+            date={hoveredPixel.created_at.split("T")[0]}
+            position={mousePos}
+          />
+        )}
+      </div>
     </div>
   )
 }
