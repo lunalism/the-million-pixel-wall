@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { savePixel } from "@/lib/savePixel"
+import { uploadImage } from "@/lib/uploadImage" // ✅ 이미지 업로드 유틸 추가
 
 /**
  * BuyPixelFormModal
@@ -14,23 +15,17 @@ export default function BuyPixelFormModal({ x, y, isOpen, onClose, onPixelSaved 
   onClose: () => void;
   onPixelSaved?: () => void // ✅ 저장 후 실행되는 콜백
 }) {
-  // 구매할 픽셀의 크기 (논리 단위 기준)
   const [width, setWidth] = useState(10)
   const [height, setHeight] = useState(10)
-
-  // 구매자 정보 입력 필드
   const [name, setName] = useState("")
   const [message, setMessage] = useState("")
-
-  // 이미지 선택 방식 (URL 입력 또는 파일 업로드)
   const [uploadType, setUploadType] = useState<"url" | "file">("url")
-  const [imageUrl, setImageUrl] = useState("") // URL 입력 값
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null) // 업로드된 파일
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null) // 이미지 미리보기 URL
+  const [imageUrl, setImageUrl] = useState("")
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   useEffect(() => {
     if (isOpen) {
-      // 모달이 열릴 때마다 모든 입력값 초기화
       setWidth(10)
       setHeight(10)
       setName("")
@@ -42,10 +37,8 @@ export default function BuyPixelFormModal({ x, y, isOpen, onClose, onPixelSaved 
     }
   }, [isOpen])
 
-  // 모달이 닫혀있으면 아무것도 렌더하지 않음
   if (!isOpen) return null
 
-  // 파일 선택 시 미리보기 이미지 설정
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -54,35 +47,46 @@ export default function BuyPixelFormModal({ x, y, isOpen, onClose, onPixelSaved 
     }
   }
 
-  // 구매하기 버튼 클릭 시 실행되는 함수 (현재는 콘솔 출력용)
   const handleSubmit = async () => {
-    // 🚫 최소 크기 제한 검사
     if (width < 10 || height < 10) {
       alert("Minimum size is 10x10 pixels.")
       return
     }
-  
-    // ✅ 저장할 데이터 구성
-    const data = {
-      x,
-      y,
-      width,
-      height,
-      name,
-      message,
-      image_url: uploadType === "url" ? imageUrl : previewUrl || "",
-    }
-  
+
+    let finalImageUrl = ""
+
     try {
-      // 📦 Supabase에 픽셀 저장 요청
-      await savePixel(data)
-  
-      console.log("🎉 Pixel purchase completed!")
-      onClose() // 모달 닫기
-      onPixelSaved?.() // ✅ 저장 직후 loadPixels 호출!
+      if (uploadType === "file") {
+        if (!uploadedFile) {
+          alert("파일을 선택해주세요!")
+          return
+        }
+        const uploadedUrl = await uploadImage(uploadedFile)
+        if (!uploadedUrl) {
+          alert("이미지 업로드에 실패했어요.")
+          return
+        }
+        finalImageUrl = uploadedUrl
+      } else {
+        finalImageUrl = imageUrl
+      }
+      console.log("🖼 최종 저장될 image_url:", finalImageUrl)
+      // ✅ waitForImage 제거 → Supabase fetch 시점에 CDN 준비 완료된 상태로 가정
+      await savePixel({
+        x,
+        y,
+        width,
+        height,
+        name,
+        message,
+        image_url: finalImageUrl,
+      })
+
+      onClose()
+      onPixelSaved?.() // fetchPixels로 다시 불러와서 렌더링
     } catch (error) {
       console.error("❌ Error while saving pixel:", error)
-      alert("An error occurred while purchasing the pixel. Please try again.")
+      alert("이미지를 저장하는 데 실패했어요. 다시 시도해주세요.")
     }
   }
 

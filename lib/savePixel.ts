@@ -15,6 +15,7 @@ export async function savePixel(data: {
   message: string
   image_url: string
 }) {
+  // pixels 테이블에 데이터 저장하기
   const { error } = await supabase.from("pixels").insert(data)
 
   if (error) {

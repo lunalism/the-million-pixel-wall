@@ -1,39 +1,47 @@
-// components/PixelImageLayer.tsx
+'use client'
+
+import { Pixel } from "@/lib/fetchPixels"
+
+interface Props {
+  pixels: Pixel[]
+}
+
+// 픽셀 하나당 실제 화면에 그릴 크기 (px)
+const PIXEL_SIZE = 10
 
 /**
  * PixelImageLayer
- * 픽셀 보드 위에 이미지들을 절대 위치로 덮어주는 컴포넌트입니다.
- * 각 픽셀 영역은 Supabase에서 불러온 image_url을 사용하며,
- * 위치와 크기는 x, y, width, height 값으로 계산됩니다.
+ * 구매된 픽셀의 이미지들을 실제 캔버스에 렌더링하는 컴포넌트입니다.
+ * 각 픽셀 데이터에는 x, y 좌표와 width, height, image_url이 포함되어 있어야 합니다.
  */
-
-import { Pixel } from "@/lib/fetchPixels";
-
-const PIXEL_SIZE = 10;
-
-type Props = {
-  pixels: Pixel[];
-};
-
 export default function PixelImageLayer({ pixels }: Props) {
   return (
-    <div className="absolute inset-0 pointer-events-none">
-      {pixels
-        .filter((p) => p.image_url) // 이미지가 있는 픽셀만
-        .map((p) => (
+    <>
+      {/* 전체 픽셀 데이터 순회하며 이미지 렌더링 */}
+      {pixels.map((pixel) => {
+        // image_url이 없는 경우 렌더링하지 않음
+        if (!pixel.image_url) return null
+
+        return (
           <img
-            key={p.id}
-            src={p.image_url}
-            alt={p.name}
-            className="absolute object-cover rounded-[2px]"
+            key={pixel.id}
+            src={pixel.image_url}
+            alt={pixel.name || "pixel"}
+            className="absolute object-cover object-center rounded-sm"
             style={{
-              left: p.x * PIXEL_SIZE,
-              top: p.y * PIXEL_SIZE,
-              width: p.width * PIXEL_SIZE,
-              height: p.height * PIXEL_SIZE,
+              left: pixel.x * PIXEL_SIZE,
+              top: pixel.y * PIXEL_SIZE,
+              width: pixel.width * PIXEL_SIZE,
+              height: pixel.height * PIXEL_SIZE,
+              zIndex: 10,
+            }}
+            onError={(e) => {
+              console.warn("❌ 이미지 로딩 실패:", pixel.image_url)
+              e.currentTarget.style.display = "none"
             }}
           />
-        ))}
-    </div>
-  );
+        )
+      })}
+    </>
+  )
 }
