@@ -9,7 +9,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { fetchPixels, Pixel } from "@/lib/fetchPixels"
+import { fetchPixels, loadPixels, Pixel } from "@/lib/fetchPixels"
 import PixelImageLayer from "./PixelImageLayer"
 import PixelTooltip from "./PixelTooltip"
 import BuyPixelFormModal from "./BuyPixelFormModal"
@@ -40,12 +40,16 @@ export default function PixelBoard() {
     load()
   }, [])
 
+  useEffect(() => {
+    loadPixels(setPixels)
+  }, [])
+
   const columns = LOGICAL_WIDTH / PIXEL_SIZE
   const rows = LOGICAL_HEIGHT / PIXEL_SIZE
 
   return (
     // 전체 페이지 영역: 가운데 정렬된 픽셀 보드
-    <div className="w-full min-h-screen bg-neutral-800 flex justify-center items-start py-10">
+    <div className="w-full bg-neutral-800 flex justify-center items-start pt-0 pb-10">
       <div
         className="relative"
         style={{
@@ -119,6 +123,7 @@ export default function PixelBoard() {
             y={selectedPixel.y}
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
+            onPixelSaved={() => loadPixels(setPixels)} // ✅ 저장 후 호출!
           />
         )}
       </div>
