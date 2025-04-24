@@ -13,6 +13,8 @@ import { fetchPixels, Pixel } from "@/lib/fetchPixels"
 import PixelTooltip from "./PixelTooltip"
 import PixelImageLayer from "./PixelImageLayer"
 
+const LOGICAL_WIDTH = 1500
+const LOGICAL_HEIGHT = 1000
 const PIXEL_SIZE = 10 // px
 
 export default function PixelBoard() {
@@ -30,10 +32,18 @@ export default function PixelBoard() {
     loadPixels()
   }, [])
 
+  // 전체 논리 픽셀 범위를 10px 단위로 나눠서 그리드 생성
+  const columns = LOGICAL_WIDTH / PIXEL_SIZE
+  const rows = LOGICAL_HEIGHT / PIXEL_SIZE
+
   return (
     <div
-      className="relative w-full h-[800px]"
-      style={{ backgroundColor: "#D8A39D" }} // 팬톤 2025 색상
+      className="relative w-full overflow-auto"
+      style={{
+        width: LOGICAL_WIDTH,
+        height: LOGICAL_HEIGHT,
+        backgroundColor: "#D68A59", // Canyon Clay 배경
+      }}
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
         setMousePos({
@@ -42,27 +52,47 @@ export default function PixelBoard() {
         })
       }}
     >
-      {/* 🖼 이미지 오버레이 (픽셀 위에 덮임) */}
+      {/* 🖼️ 구매된 픽셀 위에 이미지 오버레이 */}
       <PixelImageLayer pixels={pixels} />
 
-      {/* 📦 픽셀 영역 블록 (투명 배경 or 테두리만) */}
-      {pixels.map((pixel) => (
-        <div
-          key={pixel.id}
-          className="absolute border border-white hover:border-blue-500 transition-all duration-150"
-          style={{
-            left: pixel.x * PIXEL_SIZE,
-            top: pixel.y * PIXEL_SIZE,
-            width: pixel.width * PIXEL_SIZE,
-            height: pixel.height * PIXEL_SIZE,
-            backgroundColor: "transparent",
-          }}
-          onMouseEnter={() => setHoveredPixel(pixel)}
-          onMouseLeave={() => setHoveredPixel(null)}
-        />
-      ))}
+      {/* 🧱 전체 그리드 렌더링 (빈 픽셀 표시) */}
+      {[...Array(rows)].flatMap((_, y) =>
+        [...Array(columns)].map((_, x) => {
+          const pixelX = x * PIXEL_SIZE
+          const pixelY = y * PIXEL_SIZE
 
-      {/* 🧩 툴팁 */}
+          // 해당 픽셀이 구매되었는지 확인
+          const purchased = pixels.find(
+            (p) =>
+              x >= p.x &&
+              x < p.x + p.width &&
+              y >= p.y &&
+              y < p.y + p.height
+          )
+
+          // 구매된 픽셀은 이미지로 표시되므로 여기선 렌더 안 함
+          if (purchased) return null
+
+          return (
+            <div
+              key={`empty-${x}-${y}`}
+              className="absolute border border-white/10 hover:border-blue-400 transition-colors cursor-pointer"
+              style={{
+                left: pixelX,
+                top: pixelY,
+                width: PIXEL_SIZE,
+                height: PIXEL_SIZE,
+              }}
+              onClick={() => {
+                // 💬 향후 구매 폼 열기 함수 연결 예정
+                console.log(`🛒 Empty pixel clicked at [${x}, ${y}]`)
+              }}
+            />
+          )
+        })
+      )}
+
+      {/* 💬 툴팁 (구매된 픽셀 hover 시 표시) */}
       {hoveredPixel && (
         <PixelTooltip
           name={hoveredPixel.name}
