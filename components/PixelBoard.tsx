@@ -13,6 +13,8 @@ import { fetchPixels, Pixel } from "@/lib/fetchPixels"
 import PixelTooltip from "./PixelTooltip"
 import PixelImageLayer from "./PixelImageLayer"
 
+const LOGICAL_WIDTH = 1500
+const LOGICAL_HEIGHT = 1000
 const PIXEL_SIZE = 10 // px
 
 export default function PixelBoard() {
@@ -30,47 +32,77 @@ export default function PixelBoard() {
     loadPixels()
   }, [])
 
+  // 전체 논리 픽셀 범위를 10px 단위로 나눠서 그리드 생성
+  const columns = LOGICAL_WIDTH / PIXEL_SIZE
+  const rows = LOGICAL_HEIGHT / PIXEL_SIZE
+
   return (
-    <div
-      className="relative w-full h-[800px]"
-      style={{ backgroundColor: "#D8A39D" }} // 팬톤 2025 색상
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect()
-        setMousePos({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        })
-      }}
-    >
-      {/* 🖼 이미지 오버레이 (픽셀 위에 덮임) */}
-      <PixelImageLayer pixels={pixels} />
+    // 전체 화면 - 배경색 & 가운데 정렬
+    <div className="w-full min-h-screen bg-neutral-800 flex justify-center items-start py-10">
+      {/* 픽셀 보드 컨테이너 */}
+      <div
+        className="relative"
+        style={{
+          width: LOGICAL_WIDTH,
+          height: LOGICAL_HEIGHT,
+          backgroundColor: "#D68A59", // Canyon Clay
+        }}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect()
+          setMousePos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+          })
+        }}
+      >
+        {/* 🖼 이미지 오버레이 */}
+        <PixelImageLayer pixels={pixels} />
 
-      {/* 📦 픽셀 영역 블록 (투명 배경 or 테두리만) */}
-      {pixels.map((pixel) => (
-        <div
-          key={pixel.id}
-          className="absolute border border-white hover:border-blue-500 transition-all duration-150"
-          style={{
-            left: pixel.x * PIXEL_SIZE,
-            top: pixel.y * PIXEL_SIZE,
-            width: pixel.width * PIXEL_SIZE,
-            height: pixel.height * PIXEL_SIZE,
-            backgroundColor: "transparent",
-          }}
-          onMouseEnter={() => setHoveredPixel(pixel)}
-          onMouseLeave={() => setHoveredPixel(null)}
-        />
-      ))}
+        {/* 🧱 전체 빈 픽셀 그리드 */}
+        {[...Array(rows)].flatMap((_, y) =>
+          [...Array(columns)].map((_, x) => {
+            const pixelX = x * PIXEL_SIZE
+            const pixelY = y * PIXEL_SIZE
 
-      {/* 🧩 툴팁 */}
-      {hoveredPixel && (
-        <PixelTooltip
-          name={hoveredPixel.name}
-          message={hoveredPixel.message}
-          date={hoveredPixel.created_at.split("T")[0]}
-          position={mousePos}
-        />
-      )}
+            const purchased = pixels.find(
+              (p) =>
+                x >= p.x &&
+                x < p.x + p.width &&
+                y >= p.y &&
+                y < p.y + p.height
+            )
+
+            if (purchased) return null
+
+            return (
+              <div
+                key={`empty-${x}-${y}`}
+                className="absolute border border-white/10 hover:border-blue-400 cursor-pointer transition-colors"
+                style={{
+                  left: pixelX,
+                  top: pixelY,
+                  width: PIXEL_SIZE,
+                  height: PIXEL_SIZE,
+                }}
+                onClick={() => {
+                  // 💬 구매 폼 호출
+                  console.log(`🛒 구매 폼 열기 at (${x}, ${y})`)
+                }}
+              />
+            )
+          })
+        )}
+
+        {/* 💬 툴팁 */}
+        {hoveredPixel && (
+          <PixelTooltip
+            name={hoveredPixel.name}
+            message={hoveredPixel.message}
+            date={hoveredPixel.created_at.split("T")[0]}
+            position={mousePos}
+          />
+        )}
+      </div>
     </div>
   )
 }
