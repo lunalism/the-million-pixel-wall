@@ -45,7 +45,7 @@ export default function PixelBoard() {
 
   return (
     // 전체 페이지 영역: 가운데 정렬된 픽셀 보드
-    <div className="w-full min-h-screen bg-neutral-800 flex justify-center items-start py-10">
+    <div className="w-full bg-neutral-800 flex justify-center items-start pt-0 pb-10">
       <div
         className="relative"
         style={{
