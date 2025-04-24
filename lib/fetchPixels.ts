@@ -23,6 +23,7 @@ export type Pixel = {
 };
 
 export async function fetchPixels(): Promise<Pixel[]> {
+  // pixels 테이블에서 데이터를 불러오기
   const { data, error } = await supabase.from("pixels").select("*");
 
   if (error) {
