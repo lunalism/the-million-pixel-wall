@@ -32,3 +32,12 @@ export async function fetchPixels(): Promise<Pixel[]> {
 
   return data as Pixel[];
 }
+
+/**
+ * loadPixels
+ * fetchPixels를 감싸서 리액트 컴포넌트 외부에서도 호출 가능한 유틸 함수로 제공합니다.
+ */
+export async function loadPixels(setPixels: (pixels: any[]) => void) {
+  const pixels = await fetchPixels()
+  setPixels(pixels)
+} 

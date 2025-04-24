@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { savePixel } from "@/lib/savePixel"
 
 /**
  * BuyPixelFormModal
@@ -6,11 +7,12 @@ import { useState, useEffect } from "react"
  * 사용자에게 이미지 입력 방식 (URL or 업로드), 크기, 이름, 메시지 등을 입력받아 구매를 수행합니다.
  */
 
-export default function BuyPixelFormModal({ x, y, isOpen, onClose }: {
+export default function BuyPixelFormModal({ x, y, isOpen, onClose, onPixelSaved }: {
   x: number;
   y: number;
   isOpen: boolean;
   onClose: () => void;
+  onPixelSaved?: () => void // ✅ 저장 후 실행되는 콜백
 }) {
   // 구매할 픽셀의 크기 (논리 단위 기준)
   const [width, setWidth] = useState(10)
@@ -53,11 +55,14 @@ export default function BuyPixelFormModal({ x, y, isOpen, onClose }: {
   }
 
   // 구매하기 버튼 클릭 시 실행되는 함수 (현재는 콘솔 출력용)
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // 🚫 최소 크기 제한 검사
     if (width < 10 || height < 10) {
-      return // 🚫 조건 미달이면 아무 것도 하지 않음
+      alert("Minimum size is 10x10 pixels.")
+      return
     }
-
+  
+    // ✅ 저장할 데이터 구성
     const data = {
       x,
       y,
@@ -65,10 +70,20 @@ export default function BuyPixelFormModal({ x, y, isOpen, onClose }: {
       height,
       name,
       message,
-      image_url: uploadType === "url" ? imageUrl : previewUrl,
+      image_url: uploadType === "url" ? imageUrl : previewUrl || "",
     }
-    console.log("🛒 구매 요청 데이터:", data)
-    onClose()
+  
+    try {
+      // 📦 Supabase에 픽셀 저장 요청
+      await savePixel(data)
+  
+      console.log("🎉 Pixel purchase completed!")
+      onClose() // 모달 닫기
+      onPixelSaved?.() // ✅ 저장 직후 loadPixels 호출!
+    } catch (error) {
+      console.error("❌ Error while saving pixel:", error)
+      alert("An error occurred while purchasing the pixel. Please try again.")
+    }
   }
 
   return (

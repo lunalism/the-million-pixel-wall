@@ -9,7 +9,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { fetchPixels, Pixel } from "@/lib/fetchPixels"
+import { fetchPixels, loadPixels, Pixel } from "@/lib/fetchPixels"
 import PixelImageLayer from "./PixelImageLayer"
 import PixelTooltip from "./PixelTooltip"
 import BuyPixelFormModal from "./BuyPixelFormModal"
@@ -38,6 +38,10 @@ export default function PixelBoard() {
       setPixels(data)
     }
     load()
+  }, [])
+
+  useEffect(() => {
+    loadPixels(setPixels)
   }, [])
 
   const columns = LOGICAL_WIDTH / PIXEL_SIZE
@@ -119,6 +123,7 @@ export default function PixelBoard() {
             y={selectedPixel.y}
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
+            onPixelSaved={() => loadPixels(setPixels)} // ✅ 저장 후 호출!
           />
         )}
       </div>
