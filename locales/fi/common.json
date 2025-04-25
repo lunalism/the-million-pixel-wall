@@ -1,0 +1,15 @@
+{
+    "notify_alert": "Ilmoitamme, kun julkaisemme!",
+    "buy_button": "Osta nyt",
+    "cancel_button": "Peruuta",
+    "preview_label": "Esikatselu",
+    "image_upload": "Lataa kuva",
+    "image_url_input": "Syötä kuvan URL",
+    "image_file_input": "Lataa kuvatiedosto",
+    "purchase_title": "Osta pikselisi!",
+    "purchase_position": "Sijainti",
+    "purchase_size_label": "Anna pikselikoko",
+    "purchase_minimum_warning": "⚠️ Vähimmäiskoko on 10×10 pikseliä.",
+    "name_placeholder": "Syötä nimesi",
+    "message_placeholder": "Jätä viesti"
+}

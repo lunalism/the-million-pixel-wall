@@ -1,0 +1,15 @@
+{
+    "notify_alert": "リリース時にお知らせします！",
+    "buy_button": "購入する",
+    "cancel_button": "キャンセル",
+    "preview_label": "プレビュー",
+    "image_upload": "画像アップロード",
+    "image_url_input": "画像URLを入力",
+    "image_file_input": "画像ファイルをアップロード",
+    "purchase_title": "ピクセルを購入しましょう！",
+    "purchase_position": "位置",
+    "purchase_size_label": "購入するピクセルサイズを入力してください",
+    "purchase_minimum_warning": "⚠️ 最小購入サイズは10×10ピクセルです。",
+    "name_placeholder": "お名前を入力",
+    "message_placeholder": "メッセージを残してください"
+}

@@ -1,0 +1,16 @@
+{
+    "notify_alert": "We’ll let you know when we launch!",
+    "buy_button": "Buy now",
+    "cancel_button": "Cancel",
+    "preview_label": "Preview",
+    "image_upload": "Image Upload",
+    "image_url_input": "Enter image URL",
+    "image_file_input": "Upload image file",
+    "purchase_title": "Purchase your pixels!",
+    "purchase_position": "Position",
+    "purchase_size_label": "Enter pixel size",
+    "purchase_minimum_warning": "⚠️ Minimum purchase is 10×10 pixels.",
+    "name_placeholder": "Enter your name",
+    "message_placeholder": "Leave a message"
+}
+  

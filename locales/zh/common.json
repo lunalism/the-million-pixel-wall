@@ -1,0 +1,15 @@
+{
+    "notify_alert": "上线时我们会通知你！",
+    "buy_button": "立即购买",
+    "cancel_button": "取消",
+    "preview_label": "预览",
+    "image_upload": "上传图片",
+    "image_url_input": "输入图片 URL",
+    "image_file_input": "上传图片文件",
+    "purchase_title": "购买您的像素！",
+    "purchase_position": "位置",
+    "purchase_size_label": "请输入像素大小",
+    "purchase_minimum_warning": "⚠️ 最小购买尺寸为 10×10 像素。",
+    "name_placeholder": "输入您的姓名",
+    "message_placeholder": "留下您的留言"
+}
