@@ -26,7 +26,7 @@ export default function AboutPage() {
             // ✨ content를 <p> 단위로 분리해서 배열로 만들기
             const paragraphs = data.content
             .split(/<\/p>\s*<p>/g) // </p><p> 기준으로 나누고
-            .map(p => p.replace(/^<p>|<\/p>$/g, '')) // 앞뒤 <p> 태그 제거
+            .map((p: string) => p.replace(/^<p>|<\/p>$/g, '')) // 앞뒤 <p> 태그 제거
             setProjectContent(paragraphs)
         }
         setLoading(false)
@@ -42,7 +42,7 @@ export default function AboutPage() {
         if (data) {
             const paragraphs = data.content
             .split(/<\/p>\s*<p>/g)
-            .map(p => p.replace(/^<p>|<\/p>$/g, ''))
+            .map((p: string) => p.replace(/^<p>|<\/p>$/g, ''))
             setLanguageContent(paragraphs)
         }
         setLoadingLanguage(false)
