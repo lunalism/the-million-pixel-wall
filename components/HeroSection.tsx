@@ -16,6 +16,7 @@
 import PixelBackground from "@/components/PixelBackground";
 import { useTranslation } from '@/lib/i18n'
 import LanguageSelector from './LanguageSelector'
+import Link from "next/link";
 
 export default function HeroSection() {
   const { t } = useTranslation()
@@ -27,9 +28,27 @@ export default function HeroSection() {
           <PixelBackground />
         </div>
 
-        {/* 🌐 언어 선택 */}
-        <div className="absolute top-4 right-4">
+        {/* 🌐 메뉴 생성 */}
+        <div className="absolute top-4 right-4 flex items-center gap-6">
+
+          {/* 🏠 홈 링크 */}
+          <Link href="/" className="text-sm font-medium text-white/60 hover:text-white transition">
+            HOME
+          </Link>
+
+          {/* ℹ️ 어바웃 링크 */}
+          <Link href="/about" className="text-sm font-medium text-white/60 hover:text-white transition">
+            ABOUT
+          </Link>
+
+          {/* ❓ FAQ 링크 */}
+          <Link href="/faq" className="text-sm font-medium text-white/60 hover:text-white transition">
+            FAQ
+          </Link>
+
+          {/* 🌐 언어 선택 */}
           <LanguageSelector />
+
         </div>
         
         {/* 메인 타이틀 */}
