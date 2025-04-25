@@ -1,0 +1,15 @@
+{
+    "notify_alert": "Nous vous informerons au lancement !",
+    "buy_button": "Acheter maintenant",
+    "cancel_button": "Annuler",
+    "preview_label": "Aperçu",
+    "image_upload": "Télécharger l’image",
+    "image_url_input": "Saisir l’URL de l’image",
+    "image_file_input": "Téléverser un fichier image",
+    "purchase_title": "Achetez vos pixels !",
+    "purchase_position": "Position",
+    "purchase_size_label": "Entrez la taille en pixels",
+    "purchase_minimum_warning": "⚠️ Taille minimum : 10×10 pixels.",
+    "name_placeholder": "Entrez votre nom",
+    "message_placeholder": "Laissez un message"
+}

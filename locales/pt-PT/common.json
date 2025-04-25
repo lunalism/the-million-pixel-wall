@@ -1,0 +1,15 @@
+{
+    "notify_alert": "Vamos avisar-te quando lançarmos!",
+    "buy_button": "Comprar agora",
+    "cancel_button": "Cancelar",
+    "preview_label": "Pré-visualização",
+    "image_upload": "Carregar imagem",
+    "image_url_input": "Introduzir URL da imagem",
+    "image_file_input": "Carregar ficheiro de imagem",
+    "purchase_title": "Compra os teus pixéis!",
+    "purchase_position": "Posição",
+    "purchase_size_label": "Indica o tamanho dos pixéis",
+    "purchase_minimum_warning": "⚠️ A compra mínima é de 10×10 pixéis.",
+    "name_placeholder": "Escreve o teu nome",
+    "message_placeholder": "Deixa uma mensagem"
+}

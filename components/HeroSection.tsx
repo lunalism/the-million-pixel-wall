@@ -14,13 +14,22 @@
 'use client'
 
 import PixelBackground from "@/components/PixelBackground";
+import { useTranslation } from '@/lib/i18n'
+import LanguageSelector from './LanguageSelector'
 
 export default function HeroSection() {
+  const { t } = useTranslation()
+  
     return (
       <section className="relative w-full bg-neutral-800 text-white py-20 px-6 text-center overflow-hidden">
         {/* 랜덤 픽셀 배경 레이어 */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <PixelBackground />
+        </div>
+
+        {/* 🌐 언어 선택 */}
+        <div className="absolute top-4 right-4">
+          <LanguageSelector />
         </div>
         
         {/* 메인 타이틀 */}
@@ -36,7 +45,7 @@ export default function HeroSection() {
         {/* CTA 버튼 */}
         <button
           className="mt-8 inline-block bg-[#34568B] hover:bg-[#2c4671] transition-colors px-6 py-3 rounded-md text-white font-medium text-sm sm:text-base shadow"
-          onClick={() => alert("📧 알림 신청 기능은 추후 연결됩니다.")}
+          onClick={() => alert(t('notify_alert'))}
         >
           Notify Me
         </button>

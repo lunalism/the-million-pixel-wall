@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from './providers' // ✅ 추가
 
 export const metadata: Metadata = {
   title: "The Million Pixel Wall – Your Pixel, Your Legacy",
@@ -36,7 +37,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

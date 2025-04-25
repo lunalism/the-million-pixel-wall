@@ -1,0 +1,15 @@
+{
+    "notify_alert": "Wir benachrichtigen dich zum Start!",
+    "buy_button": "Jetzt kaufen",
+    "cancel_button": "Abbrechen",
+    "preview_label": "Vorschau",
+    "image_upload": "Bild hochladen",
+    "image_url_input": "Bild-URL eingeben",
+    "image_file_input": "Bilddatei hochladen",
+    "purchase_title": "Kaufe deine Pixel!",
+    "purchase_position": "Position",
+    "purchase_size_label": "Gib die Pixelgröße ein",
+    "purchase_minimum_warning": "⚠️ Mindestgröße ist 10×10 Pixel.",
+    "name_placeholder": "Dein Name",
+    "message_placeholder": "Hinterlasse eine Nachricht"
+}

@@ -1,0 +1,15 @@
+{
+    "notify_alert": "런칭 시 알려드릴게요!",
+    "buy_button": "구매하기",
+    "cancel_button": "취소",
+    "preview_label": "미리보기",
+    "image_upload": "이미지 업로드",
+    "image_url_input": "이미지 URL 입력",
+    "image_file_input": "이미지 파일 업로드",
+    "purchase_title": "픽셀을 구매하세요!",
+    "purchase_position": "위치",
+    "purchase_size_label": "구매할 픽셀 크기를 입력하세요",
+    "purchase_minimum_warning": "⚠️ 최소 구매 크기는 10×10 픽셀입니다.",
+    "name_placeholder": "이름을 입력하세요",
+    "message_placeholder": "메시지를 남겨보세요"
+}
