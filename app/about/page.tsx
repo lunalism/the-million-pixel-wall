@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import HeroSection from '@/components/HeroSection'
 import { fetchAbout } from '@/lib/fetchAbout'
 import { useLanguage } from '@/context/languageContext'
+import { SiNextdotjs, SiTailwindcss, SiSupabase, SiVercel, SiSentry } from "react-icons/si"
+import { Cursor } from "@lobehub/icons"
 
 export default function AboutPage() {
 
@@ -113,24 +115,92 @@ export default function AboutPage() {
                             </>
                         )}
                         {activeTab === 'tech' && (
-                        <>
-                            <h2 className="text-2xl font-bold text-white">Technology Stack</h2>
-                            <ul className="list-disc list-inside">
-                            <li>🔧 Next.js 14 with App Router</li>
-                            <li>🎨 Tailwind CSS for styling</li>
-                            <li>💾 Supabase for database, auth, and storage</li>
-                            <li>🌐 i18n context + custom multilingual routing</li>
-                            </ul>
-                        </>
+                            <>
+                                <h2 className="text-2xl font-bold text-white mb-6">Technology Stack</h2>
+                                <div className="flex flex-col gap-4 text-white/80 text-base">
+                                    {/* Next.js */}
+                                    <div className="flex items-center gap-3">
+                                        <SiNextdotjs className="w-6 h-6 text-white/80" />
+                                        <span>Next.js 14 with App Router</span>
+                                    </div>
+
+                                    {/* Tailwind CSS */}
+                                    <div className="flex items-center gap-3">
+                                        <SiTailwindcss className="w-6 h-6 text-white/80" />
+                                        <span>Tailwind CSS for styling</span>
+                                    </div>
+
+                                    {/* Supabase */}
+                                    <div className="flex items-center gap-3">
+                                        <SiSupabase className="w-6 h-6 text-white/80" />
+                                        <span>Supabase (Database, Auth, Storage)</span>
+                                    </div>
+
+                                    {/* Vercel */}
+                                    <div className="flex items-center gap-3">
+                                        <SiVercel className="w-6 h-6 text-white/80" />
+                                        <span>Vercel for hosting and deployment</span>
+                                    </div>
+
+                                    {/* Sentry */}
+                                    <div className="flex items-center gap-3">
+                                        <SiSentry className="w-6 h-6 text-white/80" />
+                                        <span>Sentry for error monitoring</span>
+                                    </div>
+
+                                    {/* Cursor AI */}
+                                    <div className="flex items-center gap-3">
+                                        <Cursor className="w-6 h-6 text-white/80" />
+                                        <span>Cursor AI as the main code editor</span>
+                                    </div>
+                                </div>
+                                {/* 📌 특별한 설계 포인트 */}
+                                <div className="mt-12">
+                                    <h3 className="text-xl font-bold text-white mb-4">Special Design Highlights</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-white/80 text-base">
+                                        {/* 디자인 포인트 항목들 */}
+                                        <div className="border border-white/10 rounded-lg p-4">
+                                            <h4 className="font-semibold text-white mb-2">Real-time Pixel Rendering</h4>
+                                            <p>Purchased pixels are immediately updated without page reloads, ensuring a seamless user experience.</p>
+                                        </div>
+
+                                        <div className="border border-white/10 rounded-lg p-4">
+                                            <h4 className="font-semibold text-white mb-2">Multilingual by Default</h4>
+                                            <p>From launch, the project supports 11+ languages, not just translated later but designed multilingual from the ground up.</p>
+                                        </div>
+
+                                        <div className="border border-white/10 rounded-lg p-4">
+                                            <h4 className="font-semibold text-white mb-2">Image Upload & CDN Optimization</h4>
+                                            <p>Uploaded images are optimized and served through Supabase CDN, ensuring fast load times globally.</p>
+                                        </div>
+
+                                        <div className="border border-white/10 rounded-lg p-4">
+                                            <h4 className="font-semibold text-white mb-2">Pixel Ownership Metadata</h4>
+                                            <p>Each pixel stores owner name, message, and purchase date — enriching the wall with human stories, not just images.</p>
+                                        </div>
+
+                                        <div className="border border-white/10 rounded-lg p-4">
+                                            <h4 className="font-semibold text-white mb-2">Designed for Scalability</h4>
+                                            <p>Structured to support future features like community feeds, advanced editing, and social interactions without refactoring.</p>
+                                        </div>
+
+                                        <div className="border border-white/10 rounded-lg p-4">
+                                            <h4 className="font-semibold text-white mb-2">Modern Developer Stack</h4>
+                                            <p>Next.js 14 + Tailwind CSS + Supabase + Sentry + Cursor AI. Designed to be fast, efficient, and developer-friendly.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </>
                         )}
                         {activeTab === 'credit' && (
-                        <>
-                            <h2 className="text-2xl font-bold text-white">Credits</h2>
-                            <p>
-                            This playful-yet-ambitious digital monument was created by Chris (aka Chrisholic) and GPT —  
-                            to celebrate the legacy of early internet creativity in a modern, global, and pixel-perfect way.
-                            </p>
-                        </>
+                            <>
+                                <h2 className="text-2xl font-bold text-white">Credits</h2>
+                                <p>
+                                    This playful-yet-ambitious digital monument was created by Chris (aka Chrisholic) and GPT —  
+                                    to celebrate the legacy of early internet creativity in a modern, global, and pixel-perfect way.
+                                </p>
+                            </>
                         )}
                     </div>
                 </div>
