@@ -132,7 +132,7 @@ export default function AboutPage() {
             {activeTab === 'tech' && (
               <>
                 {/* 🚀 사용 기술 */}
-                <h2 className="text-2xl font-bold text-white mb-6">사용 기술</h2>
+                <h2 className="text-2xl font-bold text-white mb-6">Technology Stack</h2>
                 <div className="flex flex-col gap-4 text-white/80 text-base">
                   {loadingTech ? (
                     <p>Loading...</p>
@@ -151,7 +151,7 @@ export default function AboutPage() {
 
                 {/* 🎯 특별한 설계 포인트 */}
                 <div className="mt-12">
-                  <h2 className="text-xl font-bold text-white mb-4">특별한 설계 포인트</h2>
+                  <h2 className="text-xl font-bold text-white mb-4">Special Design Highlights</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-white/80 text-base">
                     {loadingHighlight ? (
                       <p>Loading...</p>
