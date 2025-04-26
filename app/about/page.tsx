@@ -15,11 +15,14 @@ export default function AboutPage() {
   // 📚 탭별 상태 관리
   const [projectContent, setProjectContent] = useState<string[]>([])
   const [languageContent, setLanguageContent] = useState<string[]>([])
+  const [creditContent, setCreditContent] = useState<string[]>([])
+  const [creditTitle, setCreditTitle] = useState<string>('Credits')
   const [techStacks, setTechStacks] = useState<AboutItem[]>([])
   const [highlights, setHighlights] = useState<AboutItem[]>([])
 
   const [loadingProject, setLoadingProject] = useState(true)
   const [loadingLanguage, setLoadingLanguage] = useState(true)
+  const [loadingCredit, setLoadingCredit] = useState(true)
   const [loadingTech, setLoadingTech] = useState(true)
   const [loadingHighlight, setLoadingHighlight] = useState(true)
 
@@ -83,6 +86,23 @@ export default function AboutPage() {
     loadHighlights()
   }, [language])
 
+  // 🔹 Credit 불러오기
+  useEffect(() => {
+    async function loadCredit() {
+      setLoadingCredit(true)
+      const data = await fetchAbout(language, 'credit')
+      if (data && 'content' in data) {
+        setCreditTitle(data.title || 'Credits')
+        const paragraphs = data.content
+          .split(/<\/p>\s*<p>/g)
+          .map((p: string) => p.replace(/^<p>|<\/p>$/g, ''))
+        setCreditContent(paragraphs)
+      }
+      setLoadingCredit(false)
+    }
+    loadCredit()
+  }, [language])
+
   return (
     <>
       <HeroSection />
@@ -99,7 +119,7 @@ export default function AboutPage() {
 
           {/* 🔹 오른쪽: 탭별 내용 */}
           <div className="md:col-span-3 text-white/80 space-y-6 text-base leading-relaxed">
-            
+
             {/* 🧱 Project 탭 */}
             {activeTab === 'project' && (
               <>
@@ -171,15 +191,20 @@ export default function AboutPage() {
             {/* 💬 Credits 탭 */}
             {activeTab === 'credit' && (
               <>
-                <h2 className="text-2xl font-bold text-white mb-6">Credits</h2>
-                <p>This playful-yet-ambitious digital monument was created by Chris (aka Chrisholic) and GPT — to celebrate the legacy of early internet creativity in a modern, global, and pixel-perfect way.</p>
+                <h2 className="text-2xl font-bold text-white mb-6">{creditTitle}</h2>
+                {loadingCredit ? (
+                  <p>Loading...</p>
+                ) : (
+                  creditContent.map((paragraph, idx) => (
+                    <div key={idx} dangerouslySetInnerHTML={{ __html: paragraph }} />
+                  ))
+                )}
               </>
             )}
-
           </div>
         </div>
 
-        {/* 🔹 하단 크레딧 */}
+        {/* 🔹 하단 푸터 */}
         <footer className="text-sm text-white/50 italic text-center pt-16 border-t border-white/10 mt-20">
           Built with ❤️ by Chris and GPT — 20 years after the original.
         </footer>
