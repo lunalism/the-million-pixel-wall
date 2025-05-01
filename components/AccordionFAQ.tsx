@@ -8,18 +8,26 @@ type FAQItem = {
 }
 
 const faqList: FAQItem[] = [
-  {
-    question: "What is The Million Pixel Wall?",
-    answer: "It's a collaborative digital canvas where people can purchase and customize pixels with images and messages, inspired by the Million Dollar Homepage.",
-  },
-  {
-    question: "How do I buy a pixel?",
-    answer: "Click on an empty pixel, fill out the form with your image, name, and message, and confirm your purchase. That’s it!",
-  },
-  {
-    question: "Do I need an account to participate?",
-    answer: "No account is required. You can join and leave your mark as a guest. Just upload and go!",
-  },
+    {
+        question: '어떻게 픽셀을 구매하나요?',
+        answer:
+          '캔버스에서 원하는 픽셀을 클릭한 후, 이미지와 메시지를 입력하고 구매 정보를 작성하시면 됩니다. Google 로그인이 필요하며, 익명으로는 구매하실 수 없습니다.',
+    },
+    {
+        question: '이미지를 꼭 업로드해야 하나요?',
+        answer:
+          '네, 이미지는 필수 항목입니다. 이 벽은 광고가 아닌 사람들의 이야기를 담는 공간이며, 업로드된 이미지는 구매자의 아이덴티티를 표현하는 중요한 요소로 사용됩니다.',
+    },
+      {
+        question: '한 사용자가 여러 개의 픽셀을 구매할 수 있나요?',
+        answer:
+          '네, 가능합니다. 여러 번에 나누어 구매하거나, 한 번에 큰 영역을 선택해 한 번에 구매하실 수도 있어요.',
+    },
+    {
+        question: '구매한 후 내용을 수정하거나 삭제할 수 있나요?',
+        answer:
+          '아직은 지원되지 않지만, 추후 업데이트를 통해 수정 기능을 제공할 수 있도록 준비 중이에요. 지금은 신중하게 입력해 주세요.',
+    },
 ]
 
 export default function AccordionFAQ() {
