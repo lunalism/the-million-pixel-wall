@@ -57,6 +57,7 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <h2 className="text-2xl font-bold text-white mb-4">Need Helps?</h2>
       {/* 이메일 입력 */}
       <div>
         <label className="block text-sm font-medium mb-1">Email</label>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import HeroSection from '@/components/HeroSection'
 import ContactForm from '@/components/ContactForm'
+import AccordionFAQ from '@/components/AccordionFAQ'
 
 export default function FAQPage() {
   const [email, setEmail] = useState('')
@@ -25,41 +26,7 @@ export default function FAQPage() {
           <ContactForm />
 
           {/* 🔹 Right: FAQ Accordion */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
-
-            {/* Question 1 */}
-            <details className="bg-neutral-700 rounded-lg p-4">
-              <summary className="font-semibold cursor-pointer">How can I purchase a pixel?</summary>
-              <p className="mt-2 text-sm text-white/80">
-                Simply click on the pixel you want, fill out the purchase form, and complete the payment to claim your space.
-              </p>
-            </details>
-
-            {/* Question 2 */}
-            <details className="bg-neutral-700 rounded-lg p-4">
-              <summary className="font-semibold cursor-pointer">How do I upload an image?</summary>
-              <p className="mt-2 text-sm text-white/80">
-                You can either enter an image URL or upload a file directly when filling out the purchase form.
-              </p>
-            </details>
-
-            {/* Question 3 */}
-            <details className="bg-neutral-700 rounded-lg p-4">
-              <summary className="font-semibold cursor-pointer">Can I edit my pixel after purchase?</summary>
-              <p className="mt-2 text-sm text-white/80">
-                Currently, pixels cannot be edited after purchase. Update features may be added in the future but now this function not allowed.
-              </p>
-            </details>
-
-            {/* Question 4 */}
-            <details className="bg-neutral-700 rounded-lg p-4">
-              <summary className="font-semibold cursor-pointer">How can I received after this project?</summary>
-              <p className="mt-2 text-sm text-white/80">
-                We will update in the "X (@lunalism)" platform. 
-              </p>
-            </details>
-          </div>
+          <AccordionFAQ />
 
         </div>
 
