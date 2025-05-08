@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { fetchFaq, FaqItem } from '@/lib/fetchFaq'
 import { useLanguage } from '@/context/languageContext'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 export default function AccordionFAQ() {
   const { language } = useLanguage()
@@ -38,10 +39,17 @@ export default function AccordionFAQ() {
           faqs.map((faq, index) => (
           <div key={faq.id} className="border border-white/10 rounded-lg">
               <button
-              onClick={() => toggleAccordion(index)}
-              className="w-full px-4 py-3 text-left text-white font-medium bg-white/5 hover:bg-white/10 rounded-t-lg transition"
+                onClick={() => toggleAccordion(index)}
+                className={`w-full px-4 py-3 flex justify-between items-center text-white font-medium bg-white/5 hover:bg-white/10 rounded-t-lg transition ${
+                  language === 'ar' ? 'text-right' : 'text-left'
+                }`}
               >
                   {faq.question}
+                  <ChevronDownIcon
+                    className={`w-4 h-4 transform transition-transform ${
+                      openIndex === index ? 'rotate-180' : ''
+                    }`}
+                  />
               </button>
               {openIndex === index && (
                 <div className="px-4 py-3 text-white/80 border-t border-white/10 text-sm leading-relaxed bg-white/5 rounded-b-lg">
