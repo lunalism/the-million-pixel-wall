@@ -11,5 +11,21 @@
     "purchase_size_label": "Indica o tamanho dos pixéis",
     "purchase_minimum_warning": "⚠️ A compra mínima é de 10×10 pixéis.",
     "name_placeholder": "Escreve o teu nome",
-    "message_placeholder": "Deixa uma mensagem"
+    "message_placeholder": "Deixa uma mensagem",
+
+    "contact": {
+        "title": "Contacte-nos",
+        "subtitle": "Tem alguma pergunta? Envie-nos uma mensagem à vontade.",
+        "name": "Nome",
+        "email": "Email",
+        "subject": "Assunto",
+        "message": "Mensagem",
+        "consent": "Concordo em receber informações por email.",
+        "submit": "Enviar mensagem",
+        "invalid_email": "Por favor, insira um email válido.",
+        "required": "Este campo é obrigatório.",
+        "success": "A sua mensagem foi enviada com sucesso!",
+        "error": "Ocorreu um erro. Por favor, tente novamente mais tarde."
+    }
+
 }

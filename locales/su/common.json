@@ -11,5 +11,21 @@
     "purchase_size_label": "Anna pikselikoko",
     "purchase_minimum_warning": "⚠️ Vähimmäiskoko on 10×10 pikseliä.",
     "name_placeholder": "Syötä nimesi",
-    "message_placeholder": "Jätä viesti"
+    "message_placeholder": "Jätä viesti",
+
+    "contact": {
+        "title": "Ota yhteyttä",
+        "subtitle": "Onko sinulla kysyttävää? Lähetä meille viesti vapaasti.",
+        "name": "Nimi",
+        "email": "Sähköposti",
+        "subject": "Aihe",
+        "message": "Viesti",
+        "consent": "Hyväksyn sähköpostiviestien vastaanottamisen.",
+        "submit": "Lähetä viesti",
+        "invalid_email": "Syötä kelvollinen sähköpostiosoite.",
+        "required": "Tämä kenttä on pakollinen.",
+        "success": "Viestisi on lähetetty onnistuneesti!",
+        "error": "Tapahtui virhe. Yritä myöhemmin uudelleen."
+    }
+
 }

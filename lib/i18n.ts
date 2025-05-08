@@ -15,7 +15,7 @@ import it from '@/locales/it/common.json'
 import su from '@/locales/su/common.json'
 import ar from '@/locales/ar/common.json'
 
-// ✅ 각 언어 코드에 해당하는 번역 객체를 매핑
+// ✅ 언어별 번역 객체 매핑
 const translations = {
   en,
   ko,
@@ -31,13 +31,19 @@ const translations = {
   ar,
 } as const
 
-// ✅ t 함수: 현재 언어에 따라 해당 key의 번역값 반환
+// ✅ 중첩된 키 ("contact.title")를 안전하게 접근하는 유틸 함수
+function getNestedValue(obj: any, key: string): string | undefined {
+  return key.split('.').reduce((acc, part) => acc?.[part], obj)
+}
+
+// ✅ t 함수: 중첩 키 지원
 export function useTranslation() {
   const { language } = useLanguage()
   const dictionary = translations[language] || translations['en']
 
-  const t = (key: keyof typeof dictionary): string => {
-    return dictionary[key] || key
+  const t = (key: string): string => {
+    const value = getNestedValue(dictionary, key)
+    return typeof value === 'string' ? value : key
   }
 
   return { t, language }

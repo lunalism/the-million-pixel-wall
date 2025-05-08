@@ -11,5 +11,21 @@
     "purchase_size_label": "Entrez la taille en pixels",
     "purchase_minimum_warning": "⚠️ Taille minimum : 10×10 pixels.",
     "name_placeholder": "Entrez votre nom",
-    "message_placeholder": "Laissez un message"
+    "message_placeholder": "Laissez un message",
+
+    "contact": {
+        "title": "Contactez-nous",
+        "subtitle": "Vous avez une question ? N'hésitez pas à nous envoyer un message.",
+        "name": "Nom",
+        "email": "Adresse e-mail",
+        "subject": "Sujet",
+        "message": "Message",
+        "consent": "J'accepte de recevoir des informations par e-mail.",
+        "submit": "Envoyer le message",
+        "invalid_email": "Veuillez entrer une adresse e-mail valide.",
+        "required": "Ce champ est requis.",
+        "success": "Votre message a été envoyé avec succès !",
+        "error": "Une erreur est survenue. Veuillez réessayer plus tard."
+    }
+
 }
