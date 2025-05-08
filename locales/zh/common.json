@@ -11,5 +11,21 @@
     "purchase_size_label": "请输入像素大小",
     "purchase_minimum_warning": "⚠️ 最小购买尺寸为 10×10 像素。",
     "name_placeholder": "输入您的姓名",
-    "message_placeholder": "留下您的留言"
+    "message_placeholder": "留下您的留言",
+
+    "contact": {
+        "title": "联系我们",
+        "subtitle": "有问题吗？随时给我们留言。",
+        "name": "您的姓名",
+        "email": "您的邮箱",
+        "subject": "主题",
+        "message": "您的留言",
+        "consent": "我同意通过电子邮件接收更新。",
+        "submit": "发送消息",
+        "invalid_email": "请输入有效的电子邮件地址。",
+        "required": "此字段为必填项。",
+        "success": "您的消息已发送！",
+        "error": "出现问题。请稍后再试。"
+    }
+
 }

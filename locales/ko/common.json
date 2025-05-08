@@ -11,5 +11,20 @@
     "purchase_size_label": "구매할 픽셀 크기를 입력하세요",
     "purchase_minimum_warning": "⚠️ 최소 구매 크기는 10×10 픽셀입니다.",
     "name_placeholder": "이름을 입력하세요",
-    "message_placeholder": "메시지를 남겨보세요"
+    "message_placeholder": "메시지를 남겨보세요",
+    
+    "contact": {
+        "title": "문의하기",
+        "subtitle": "질문이 있으신가요? 언제든지 메시지를 보내주세요.",
+        "name": "이름",
+        "email": "이메일",
+        "subject": "제목",
+        "message": "메시지",
+        "consent": "이메일로 소식을 받는 것에 동의합니다.",
+        "submit": "메시지 보내기",
+        "invalid_email": "유효한 이메일 주소를 입력해주세요.",
+        "required": "이 항목은 필수입니다.",
+        "success": "메시지가 성공적으로 전송되었습니다!",
+        "error": "문제가 발생했어요. 잠시 후 다시 시도해주세요."
+    }
 }

@@ -11,6 +11,21 @@
     "purchase_size_label": "Enter pixel size",
     "purchase_minimum_warning": "⚠️ Minimum purchase is 10×10 pixels.",
     "name_placeholder": "Enter your name",
-    "message_placeholder": "Leave a message"
+    "message_placeholder": "Leave a message",
+    
+    "contact": {
+        "title": "Contact Us",
+        "subtitle": "Got a question? Drop us a message anytime.",
+        "name": "Your Name",
+        "email": "Your Email",
+        "subject": "Subject",
+        "message": "Your Message",
+        "consent": "I agree to receive updates by email.",
+        "submit": "Send Message",
+        "invalid_email": "Please enter a valid email address.",
+        "required": "This field is required.",
+        "success": "Your message has been sent!",
+        "error": "Something went wrong. Please try again later."
+    }
 }
   

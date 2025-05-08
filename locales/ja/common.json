@@ -11,5 +11,21 @@
     "purchase_size_label": "購入するピクセルサイズを入力してください",
     "purchase_minimum_warning": "⚠️ 最小購入サイズは10×10ピクセルです。",
     "name_placeholder": "お名前を入力",
-    "message_placeholder": "メッセージを残してください"
+    "message_placeholder": "メッセージを残してください",
+
+    "contact": {
+        "title": "お問い合わせ",
+        "subtitle": "ご質問がありますか？お気軽にメッセージをお送りください。",
+        "name": "お名前",
+        "email": "メールアドレス",
+        "subject": "件名",
+        "message": "メッセージ",
+        "consent": "メールでのお知らせを受け取ることに同意します。",
+        "submit": "メッセージを送信",
+        "invalid_email": "有効なメールアドレスを入力してください。",
+        "required": "この項目は必須です。",
+        "success": "メッセージが送信されました！",
+        "error": "エラーが発生しました。後でもう一度お試しください。"
+    }
+
 }

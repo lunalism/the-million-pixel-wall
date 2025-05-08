@@ -11,5 +11,21 @@
     "purchase_size_label": "Informe o tamanho do pixel",
     "purchase_minimum_warning": "⚠️ Compra mínima de 10×10 pixels.",
     "name_placeholder": "Digite seu nome",
-    "message_placeholder": "Deixe uma mensagem"
+    "message_placeholder": "Deixe uma mensagem",
+
+    "contact": {
+        "title": "Fale Conosco",
+        "subtitle": "Tem alguma dúvida? Fique à vontade para nos enviar uma mensagem.",
+        "name": "Nome",
+        "email": "E-mail",
+        "subject": "Assunto",
+        "message": "Mensagem",
+        "consent": "Concordo em receber informações por e-mail.",
+        "submit": "Enviar mensagem",
+        "invalid_email": "Por favor, insira um e-mail válido.",
+        "required": "Este campo é obrigatório.",
+        "success": "Sua mensagem foi enviada com sucesso!",
+        "error": "Ocorreu um erro. Tente novamente mais tarde."
+    }
+
 }
