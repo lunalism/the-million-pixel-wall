@@ -12,7 +12,8 @@ import fr from '@/locales/fr/common.json'
 import ptPT from '@/locales/pt-PT/common.json'
 import ptBR from '@/locales/pt-BR/common.json'
 import it from '@/locales/it/common.json'
-import fi from '@/locales/fi/common.json'
+import su from '@/locales/su/common.json'
+import ar from '@/locales/ar/common.json'
 
 // ✅ 각 언어 코드에 해당하는 번역 객체를 매핑
 const translations = {
@@ -26,7 +27,8 @@ const translations = {
   'pt-PT': ptPT,
   'pt-BR': ptBR,
   it,
-  fi,
+  su,
+  ar,
 } as const
 
 // ✅ t 함수: 현재 언어에 따라 해당 key의 번역값 반환

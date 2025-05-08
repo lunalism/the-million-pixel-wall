@@ -4,9 +4,6 @@ import { useState, useEffect } from 'react'
 import HeroSection from '@/components/HeroSection'
 import { fetchAbout, AboutItem } from '@/lib/fetchAbout'
 import { useLanguage } from '@/context/languageContext'
-import { SiNextdotjs, SiTailwindcss, SiSupabase, SiVercel, SiSentry, SiTypescript, SiHeadlessui } from "react-icons/si"
-import { FiFramer } from "react-icons/fi"
-import { Cursor } from "@lobehub/icons"
 import { iconMap } from '@/lib/iconMap'
 
 export default function AboutPage() {
@@ -118,7 +115,12 @@ export default function AboutPage() {
           </div>
 
           {/* 🔹 오른쪽: 탭별 내용 */}
-          <div className="md:col-span-3 text-white/80 space-y-6 text-base leading-relaxed">
+          <div
+            className={`md:col-span-3 space-y-6 text-base leading-relaxed text-white/80 ${
+              language === 'ar' ? 'text-right' : ''
+            }`}
+            dir={language === 'ar' ? 'rtl' : undefined}
+          >
 
             {/* 🧱 Project 탭 */}
             {activeTab === 'project' && (
