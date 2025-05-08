@@ -1,55 +1,61 @@
-// components/ContactForm.tsx
 'use client'
 
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n' // 🌐 다국어 번역 훅
 
 export default function ContactForm() {
-  // 입력값 상태 관리
+  const { t } = useTranslation() // ✅ i18n 번역 함수 불러오기
+
+  // ✅ 폼 입력값 상태
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
   const [agree, setAgree] = useState(false)
 
-  // 입력 에러 관리
+  // ✅ 에러 및 제출 상태
   const [emailError, setEmailError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // 이메일 유효성 검사 정규표현식
+  // ✅ 이메일 유효성 검사용 정규표현식
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-  // 이메일 검사 함수
+  // 📬 이메일 입력 시 유효성 검사
   const validateEmail = (value: string) => {
     if (!emailRegex.test(value)) {
-      setEmailError('❗ Please enter a valid email address.')
+      setEmailError(t('contact.invalid_email')) // ❗ 유효하지 않을 경우 메시지
     } else {
       setEmailError('')
     }
   }
 
-  // 폼 제출 함수
+  // 📩 폼 전송 이벤트 처리
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // ❌ 필수 항목 확인
     if (!email || !name || !subject || !message || !agree || emailError) {
-      alert('Please fill out all fields correctly.')
+      alert(t('contact.required')) // 🛑 필수 항목 알림
       return
     }
 
     try {
       setIsSubmitting(true)
 
-      // 여기서 메일 전송 API 호출 로직 추가 예정
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // 모의 전송
+      // 🔄 실제 API 전송 전 모의 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      alert('✅ Your inquiry has been successfully sent!')
+      // ✅ 성공 메시지
+      alert(t('contact.success'))
+
+      // 🔄 입력 초기화
       setEmail('')
       setName('')
       setSubject('')
       setMessage('')
       setAgree(false)
     } catch (error) {
-      alert('❌ Failed to send. Please try again.')
+      alert(t('contact.error')) // ❌ 실패 메시지
     } finally {
       setIsSubmitting(false)
     }
@@ -57,10 +63,13 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold text-white mb-4">Need Helps?</h2>
-      {/* 이메일 입력 */}
+      {/* 📌 제목 */}
+      <h2 className="text-2xl font-bold text-white mb-4">{t('contact.title')}</h2>
+      <p className="text-white/70 mb-6">{t('contact.subtitle')}</p>
+
+      {/* ✉️ 이메일 */}
       <div>
-        <label className="block text-sm font-medium mb-1">Email</label>
+        <label className="block text-sm font-medium mb-1">{t('contact.email')}</label>
         <input
           type="email"
           className={`w-full rounded-lg px-4 py-2 border bg-neutral-900 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -76,43 +85,43 @@ export default function ContactForm() {
         {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
       </div>
 
-      {/* 이름 입력 */}
+      {/* 🙋‍♀️ 이름 */}
       <div>
-        <label className="block text-sm font-medium mb-1">Name</label>
+        <label className="block text-sm font-medium mb-1">{t('contact.name')}</label>
         <input
           type="text"
           className="w-full rounded-lg px-4 py-2 border border-white/20 bg-neutral-900 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Your name"
+          placeholder={t('contact.name')}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </div>
 
-      {/* 제목 입력 */}
+      {/* 📝 제목 */}
       <div>
-        <label className="block text-sm font-medium mb-1">Subject</label>
+        <label className="block text-sm font-medium mb-1">{t('contact.subject')}</label>
         <input
           type="text"
           className="w-full rounded-lg px-4 py-2 border border-white/20 bg-neutral-900 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Subject"
+          placeholder={t('contact.subject')}
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
         />
       </div>
 
-      {/* 메시지 입력 */}
+      {/* 💬 메시지 */}
       <div>
-        <label className="block text-sm font-medium mb-1">Message</label>
+        <label className="block text-sm font-medium mb-1">{t('contact.message')}</label>
         <textarea
           className="w-full rounded-lg px-4 py-2 border border-white/20 bg-neutral-900 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Write your message here..."
+          placeholder={t('contact.message')}
           rows={4}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
       </div>
 
-      {/* 수신 동의 체크박스 */}
+      {/* ✅ 정보 수신 동의 */}
       <div className="flex items-center gap-2">
         <input
           type="checkbox"
@@ -122,11 +131,11 @@ export default function ContactForm() {
           className="accent-blue-500"
         />
         <label htmlFor="agree" className="text-sm">
-          I agree to receive information via email.
+          {t('contact.consent')}
         </label>
       </div>
 
-      {/* 전송 버튼 */}
+      {/* 🚀 전송 버튼 */}
       <div>
         <button
           type="submit"
@@ -137,7 +146,7 @@ export default function ContactForm() {
           } text-white`}
           disabled={!email || !name || !subject || !message || !agree || !!emailError || isSubmitting}
         >
-          {isSubmitting ? 'Sending...' : 'Send'}
+          {isSubmitting ? t('contact.sending') || 'Sending...' : t('contact.submit')}
         </button>
       </div>
     </form>
