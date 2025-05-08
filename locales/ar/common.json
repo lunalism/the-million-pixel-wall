@@ -1,0 +1,16 @@
+{
+    "notify_alert": "سنعلمك عند الإطلاق!",
+    "buy_button": "اشترِ الآن",
+    "cancel_button": "إلغاء",
+    "preview_label": "معاينة",
+    "image_upload": "تحميل الصورة",
+    "image_url_input": "أدخل رابط الصورة",
+    "image_file_input": "تحميل ملف الصورة",
+    "purchase_title": "اشترِ البكسل الخاص بك!",
+    "purchase_position": "الموقع",
+    "purchase_size_label": "أدخل حجم البكسل المراد شراؤه",
+    "purchase_minimum_warning": "⚠️ الحد الأدنى للشراء هو 10×10 بكسل.",
+    "name_placeholder": "أدخل اسمك",
+    "message_placeholder": "اترك رسالة"
+  }
+  

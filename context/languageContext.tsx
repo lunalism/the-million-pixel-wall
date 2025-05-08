@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 // ✅ 우리가 지원하는 언어 목록 정의
 const supportedLanguages = [
-  'ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'pt-PT', 'pt-BR', 'it', 'fi'
+  'ko', 'en', 'ja', 'zh', 'es', 'de', 'fr', 'pt-PT', 'pt-BR', 'it', 'su', 'ar'
 ] as const
 
 // ✅ Language 타입 정의 (지원 언어만 허용)
