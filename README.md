@@ -1,6 +1,6 @@
 # 🧱 The Million Pixel Wall
 
-![Project Preview](./preview.png)
+![Project Preview](/public/preview.png)
 
 A modern reinterpretation of the legendary 2005 Million Dollar Homepage.  
 **Buy a pixel. Leave a mark. Make history.**
