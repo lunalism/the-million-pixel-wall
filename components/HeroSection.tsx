@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function HeroSection() {
   return (
-    <section className="w-full min-h-[80vh] flex items-center justify-center bg-white text-black px-6">
+    <section className="w-full h-[65vh] pt-24 flex items-start justify-center bg-white text-black px-6">
       <div className="max-w-3xl text-center">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
           THE MILLION PIXEL WALL
