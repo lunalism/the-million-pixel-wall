@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧱 The Million Pixel Wall
 
-## Getting Started
+![Project Preview](./preview.png)
 
-First, run the development server:
+A modern reinterpretation of the legendary 2005 Million Dollar Homepage.  
+**Buy a pixel. Leave a mark. Make history.**
+
+---
+
+## ✨ What is this?
+
+> **The Million Pixel Wall** is a pixel-based participatory web art project.  
+> Inspired by the original 2005 Million Dollar Homepage, this project celebrates internet nostalgia with a modern, elegant twist.  
+> Every pixel you buy becomes part of a permanent digital archive — a wall of messages, memes, and memories.
+
+---
+
+## 🚀 Tech Stack
+
+- **Next.js (App Router)** – React-based framework
+- **TypeScript** – For safer code and better DX
+- **Tailwind CSS** – Rapid utility-first styling
+- **Pretendard** – The project’s official display font
+- **Supabase** (upcoming) – Backend for pixel data & auth
+- **Stripe** (upcoming) – Secure pixel purchase payments
+
+---
+
+## 📐 Project Structure
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+the-million-pixel-wall/
+├── app/                # App Router pages
+├── components/         # Reusable UI components
+├── public/
+│   ├── fonts/          # Pretendard font files
+│   └── preview.png     # Project preview image
+├── styles/             # Global styles (Tailwind, font-face)
+├── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧠 Project Concept
+- 🧱 1 pixel = $1
+- 🕹️ Fully anonymous & instant participation
+- 🌐 Built for the open web
+- 🕰️ Captures internet culture in a permanent, crowd-built artifact
+- 🖼️ Viewers can hover over each pixel to see messages/images
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Roadmap
+- [x] Initialize project with Next.js + Tailwind
+- [x] Set up Pretendard font & global styles
+- [x] Create this README with preview
+- [ ] Build Hero Section
+- [ ] Implement Pixel Grid UI
+- [ ] Add Supabase for storing pixel data
+- [ ] Enable Stripe payments
+- [ ] Deploy and promote!
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
+MIT License © 2025
+We believe in open creativity, collective ownership, and permanent digital memory.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 💡 Inspired by
+The Million Dollar Homepage (2005)
+Retro web aesthetics & modern UI/UX principles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
