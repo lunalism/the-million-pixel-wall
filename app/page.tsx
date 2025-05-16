@@ -1,7 +1,10 @@
+import HeroSection from '@/components/HeroSection';
+
 export default function Home() {
   return (
-    <div className="text-2xl font-bold">
-      👋 Hello, Pretendard!
-    </div>
+    <main>
+      <HeroSection />
+      {/* 다음 섹션들 여기에 붙이기 */}
+    </main>
   );
 }
