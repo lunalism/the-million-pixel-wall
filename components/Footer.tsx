@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="w-full bg-white py-12 flex justify-center items-center">
       {/* 텍스트: 흐린 검정, 얇은 글꼴 */}
       <p className="text-sm text-black/60 font-thin tracking-wide">
-        2005 | 2025
+        from pixels to memories — 2005 | 2025 — from history to legacy
       </p>
     </footer>
   );
