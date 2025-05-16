@@ -6,15 +6,19 @@ const GRID_SIZE = 100;
 
 export default function PixelGrid() {
   return (
-    <section className="w-full pt-8 pb-16 bg-white flex justify-center">
+    // 섹션 전체: 가운데 정렬 + 여백 조정
+    <section className="w-full py-12 bg-white flex items-center justify-center">
+      
+      {/* 픽셀 그리드 박스: 100x100 그리드 */}
       <div
         className="grid gap-[1px] bg-gray-200"
         style={{
           gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
-          width: '1000px',
+          width: '1000px', // 고정 너비 (픽셀당 10px x 100)
           maxWidth: '100%',
         }}
       >
+        {/* 픽셀 하나하나 렌더링 */}
         {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, idx) => (
           <div
             key={idx}
