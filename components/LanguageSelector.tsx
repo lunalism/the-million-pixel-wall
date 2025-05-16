@@ -2,6 +2,7 @@
 
 import { useLanguage } from '@/context/LanguageContext';
 import { Listbox } from '@headlessui/react';
+import { ChevronDown } from 'lucide-react';
 
 const languages = [
   { code: 'en', label: 'ENGLISH' },
@@ -22,6 +23,7 @@ export default function LanguageSelector() {
           {/* 버튼 */}
           <Listbox.Button className="w-full text-xs font-light text-black bg-white border border-gray-300 rounded-md px-2 py-1 shadow-sm hover:bg-gray-100 transition">
             {selected.label}
+            <ChevronDown size={14} className="text-gray-500 ml-1" />
           </Listbox.Button>
 
           {/* 옵션 목록 */}
