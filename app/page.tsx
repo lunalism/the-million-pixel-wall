@@ -1,10 +1,11 @@
 import HeroSection from '@/components/HeroSection';
+import PixelGrid from '@/components/PixelGrid';
 
 export default function Home() {
   return (
     <main>
       <HeroSection />
-      {/* 다음 섹션들 여기에 붙이기 */}
+      <PixelGrid />
     </main>
   );
 }
