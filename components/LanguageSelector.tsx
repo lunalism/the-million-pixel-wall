@@ -10,7 +10,7 @@ export default function LanguageSelector() {
       <select
         value={lang}
         onChange={(e) => setLang(e.target.value)}
-        className="text-sm border px-2 py-1 rounded bg-white"
+        className="text-xs text-black bg-white border border-gray-300 rounded-md px-2 py-[6px] shadow-sm focus:outline-none focus:ring-1 focus:ring-black/10"
       >
         <option value="en">ENGLISH</option>
         <option value="ko">KOREAN</option>
