@@ -3,6 +3,7 @@
 import React from 'react';
 
 export default function HowItWorks() {
+  // 3단계 안내 텍스트 정의
   const steps = [
     {
       title: '1. Select Pixels',
@@ -25,15 +26,18 @@ export default function HowItWorks() {
         HOW IT WORKS
       </h2>
 
-      {/* 3단 카드 레이아웃 */}
+      {/* 카드 그리드: 반응형 1~3단 구성 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
         {steps.map((step, index) => (
           <div
             key={index}
             className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 text-center"
           >
-            <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
-            <p className="text-sm text-black/70">{step.description}</p>
+            {/* 타이틀: Regular 굵기 */}
+            <h3 className="text-lg font-normal mb-2">{step.title}</h3>
+
+            {/* 설명: Thin 폰트로 더 가벼운 느낌 */}
+            <p className="text-sm font-thin text-black/70">{step.description}</p>
           </div>
         ))}
       </div>
