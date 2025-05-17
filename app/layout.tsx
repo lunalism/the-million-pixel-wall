@@ -1,13 +1,13 @@
 import './globals.css';
 import { LanguageProvider } from '@/context/LanguageContext';
-import LanguageSelector from '@/components/LanguageSelector';
+import TopNav from '@/components/TopNav';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
         <LanguageProvider>
-          <LanguageSelector />
+          <TopNav /> {/* 우상단 네비게이션 포함 */}
           {children}
         </LanguageProvider>
       </body>
