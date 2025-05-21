@@ -32,9 +32,16 @@ export function HowItWorks() {
             key={i}
             className="flex flex-col items-center border rounded-lg p-6 hover:shadow-md transition"
           >
-            <div className="text-blue-600 mb-4">{step.icon}</div>
-            <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-            <p className="text-gray-600 text-sm">{step.desc}</p>
+            {/* ✅ 아이콘: 검정색 */}
+            <div className="text-black mb-4">{step.icon}</div>
+
+            {/* ✅ 타이틀: 얇은 글꼴 */}
+            <h3 className="text-lg font-light mb-1">{step.title}</h3>
+
+            {/* ✅ 설명: 더 작은 사이즈 + 연한 텍스트 */}
+            <p className="text-sm text-gray-500 leading-relaxed font-extralight">
+              {step.desc}
+            </p>
           </div>
         ))}
       </div>
