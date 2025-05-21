@@ -1,94 +1,95 @@
 # 🧱 The Million Pixel Wall  
-**20주년 리메이크 프로젝트**
+**20th Anniversary Remake Project**
 
-> "디지털 역사 속에 당신의 브랜드를 새기세요."  
-> 2005년, 단 하나의 웹사이트로 세상을 놀라게 했던 **Million Dollar Homepage**.  
-> 2025년, 우리는 그것을 현대적으로 재해석합니다.
-
----
-
-## 📌 프로젝트 개요
-
-- **프로젝트명:** The Million Pixel Wall  
-- **목표:** 1,000,000픽셀의 그리드 위에 광고를 올리고 영구히 기록되는 디지털 광고 보드
-- **출시 예정:** 2025년
+> "Immortalize your brand in digital history."  
+> Inspired by the original [Million Dollar Homepage](http://www.milliondollarhomepage.com/) from 2005,  
+> this project reimagines the concept for the web of 2025.
 
 ---
 
-## 🛠 기술 스택
+## 📌 Overview
 
-| 파트         | 사용 기술                  |
-|--------------|----------------------------|
-| 프론트엔드   | Next.js + TypeScript       |
-| 백엔드       | Supabase                   |
-| 배포         | Vercel                     |
-| 결제 시스템   | PayPal Checkout            |
-| UI 컴포넌트  | shadcn/ui (관리자 대시보드 중심) |
-| 스타일링     | Tailwind CSS               |
+- **Project Name:** The Million Pixel Wall  
+- **Goal:** A 1,000,000-pixel grid where users can purchase and upload permanent ads
+- **Launch:** June 2025 (to mark the 20th anniversary of the original)
 
 ---
 
-## 💸 픽셀 가격 정책
+## 🛠 Tech Stack
 
-- **가격:** 1 픽셀 = $1
-- **최소 구매 단위:** 100 픽셀 (10x10 블록)
-- **형태:** 원하는 위치의 블록을 선택하고 이미지 및 링크를 등록
-
----
-
-## 🎯 핵심 기능
-
-### 사용자 측
-- ✅ 1000x1000 픽셀 그리드에서 원하는 영역 선택
-- ✅ 이미지 업로드 및 외부 링크(URL) 연결
-- ✅ PayPal 연동으로 결제 및 구매 완료 처리
-- ✅ 광고 클릭 시 해당 링크로 이동
-- 🚩 광고 신고 기능 (남용 방지 시스템 포함)
-
-### 관리자 측 (Admin Panel – built with shadcn/ui)
-- 📊 전체 픽셀 판매 현황, 수익, 신고 건수 대시보드
-- 🚨 광고 신고 처리 (승인 / 삭제 / 차단)
-- 📝 관리자 메모 기록
-- 🧱 신고 남용 IP 제한 및 이미지 필터링
+| Part           | Technology                     |
+|----------------|--------------------------------|
+| Frontend       | Next.js + TypeScript           |
+| Backend        | Supabase                       |
+| Deployment     | Vercel                         |
+| Payments       | PayPal Checkout                |
+| UI Components  | [shadcn/ui](https://ui.shadcn.com) (Admin Dashboard) |
+| Styling        | Tailwind CSS                   |
 
 ---
 
-## 🌍 도메인
+## 💸 Pixel Pricing Policy
 
-- 후보:
+- **Price:** $1 per pixel
+- **Minimum Purchase:** 100 pixels (10x10 block)
+- **Model:** Users select a block, upload an image, and link to their website
+
+---
+
+## 🎯 Core Features
+
+### 🔹 Public Users
+- Interactive 1000x1000 pixel grid
+- Pixel selection and preview
+- Upload image & link to a URL
+- Secure payment via PayPal
+- Live advertisement placement upon payment
+- Report inappropriate ads (with abuse prevention)
+
+### 🔸 Admin Panel (Powered by `shadcn/ui`)
+- Dashboard with stats: total pixels sold, revenue, reports
+- Manage ad reports: approve, delete, block
+- View ad details and reporter comments
+- Ban malicious IPs / filter harmful content
+- Components used: `<Card>`, `<Table>`, `<Dialog>`, `<DropdownMenu>`, etc.
+
+---
+
+## 🌐 Domain (Pending)
+
+- Candidates:
   - `the-million-pixel-wall.com`
   - `the-million-pixel-wall.io`
-- 도메인 구매 시점에 확정 예정
+- Will be finalized upon purchase
 
 ---
 
-## 🧩 페이지 구성 (예정)
+## 🧩 Page Structure (Planned)
 
-- `/` – 메인 홈 (그리드, 소개, CTA)
-- `/purchase` – 픽셀 구매 페이지
-- `/about` – 프로젝트 소개 (2열 구조)
-- `/faq` – 자주 묻는 질문 (1열+2행 구조)
-- `/admin` – 관리자 페이지 (shadcn 기반 UI)
-
----
-
-## 🕰 연대기
-
-| 연도 | 설명 |
-|------|------|
-| 2005 | The Million Dollar Homepage 원작 출시 |
-| 2025 | The Million Pixel Wall 20주년 리메이크 |
+- `/` – Main landing page with grid & CTA
+- `/purchase` – Pixel selection & purchase
+- `/about` – Project introduction (2-column layout)
+- `/faq` – FAQ with contact & categories (2x2 layout)
+- `/admin` – Admin panel with reports dashboard
 
 ---
 
-## 🙌 참여 및 피드백
+## 🕰 Timeline
 
-- 문의 또는 피드백: [your@email.com]
-- 프로젝트에 기여하고 싶다면 PR을 보내주세요!
+| Year | Event                                     |
+|------|-------------------------------------------|
+| 2005 | Launch of the original Million Dollar Homepage |
+| 2025 | 20th anniversary remake: The Million Pixel Wall |
 
 ---
 
-## 🧾 라이선스
+## 🙌 Contributing & Feedback
+
+- Suggestions, bugs, or ideas? [your@email.com]
+- Want to contribute? Fork the repo and submit a PR!
+
+---
+
+## 🧾 License
 
 MIT License © 2025
-
