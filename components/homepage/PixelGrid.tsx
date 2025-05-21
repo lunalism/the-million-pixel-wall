@@ -30,7 +30,7 @@ export function PixelGrid() {
   return (
     <>
       <div className="w-full flex justify-center">
-        <div ref={parentRef} className="relative h-[600px] w-[1000px] overflow-auto border rounded">
+        <div ref={parentRef} className="relative h-[1000px] w-[1200px] overflow-auto border rounded">
           <div
             style={{
               height: rowVirtualizer.getTotalSize(),
