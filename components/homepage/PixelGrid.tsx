@@ -6,7 +6,7 @@ import React, { useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 const GRID_SIZE = 1000;
-const PIXEL_SIZE = 10; // px
+const PIXEL_SIZE = 15; // px
 
 export function PixelGrid() {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,7 @@ export function PixelGrid() {
     <div className="w-full flex justify-center">
       <div
         ref={parentRef}
-        className="relative h-[1000px] w-[1200px] overflow-auto rounded shadow-sm"
+        className="relative h-[1000px] w-[1200px] overflow-auto shadow-sm"
       >
         <div
           style={{
