@@ -1,8 +1,65 @@
+// components/homepage/PixelGrid.tsx
+
+"use client";
+
+import React, { useRef } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
+
+const GRID_SIZE = 1000;
+const PIXEL_SIZE = 15; // px
+
 export function PixelGrid() {
-    return (
-      <div className="bg-gray-100 h-[500px] mb-12 border rounded-lg flex items-center justify-center text-gray-400 text-sm">
-        Pixel Grid Placeholder (1000 x 1000 pixels)
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const rowVirtualizer = useVirtualizer({
+    count: GRID_SIZE,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => PIXEL_SIZE,
+    overscan: 10,
+  });
+
+  const columnVirtualizer = useVirtualizer({
+    horizontal: true,
+    count: GRID_SIZE,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => PIXEL_SIZE,
+    overscan: 10,
+  });
+
+  return (
+    <div className="w-full flex justify-center">
+      <div
+        ref={parentRef}
+        className="relative h-[1000px] w-[1200px] overflow-auto shadow-sm"
+      >
+        <div
+          style={{
+            height: rowVirtualizer.getTotalSize(),
+            width: columnVirtualizer.getTotalSize(),
+            position: "relative",
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((row) =>
+            columnVirtualizer.getVirtualItems().map((column) => {
+              const x = column.index;
+              const y = row.index;
+              const pixelId = `${x}-${y}`;
+              return (
+                <div
+                  key={pixelId}
+                  title={`(${x}, ${y})`}
+                  className="absolute bg-white hover:bg-gray-200 border border-gray-200"
+                  style={{
+                    width: PIXEL_SIZE,
+                    height: PIXEL_SIZE,
+                    transform: `translateX(${column.start}px) translateY(${row.start}px)`,
+                  }}
+                />
+              );
+            })
+          )}
+        </div>
       </div>
-    );
-  }
-  
+    </div>
+  );
+}
