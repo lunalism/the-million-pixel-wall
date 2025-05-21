@@ -27,36 +27,38 @@ export function PixelGrid() {
   });
 
   return (
-    <div
-      ref={parentRef}
-      className="relative h-[1000px] w-[1200px] overflow-auto border rounded"
-    >
+    <div className="w-full flex justify-center">
       <div
-        style={{
-          height: rowVirtualizer.getTotalSize(),
-          width: columnVirtualizer.getTotalSize(),
-          position: "relative",
-        }}
+        ref={parentRef}
+        className="relative h-[1000px] w-[1200px] overflow-auto rounded shadow-sm"
       >
-        {rowVirtualizer.getVirtualItems().map((row) =>
-          columnVirtualizer.getVirtualItems().map((column) => {
-            const x = column.index;
-            const y = row.index;
-            const pixelId = `${x}-${y}`;
-            return (
-              <div
-                key={pixelId}
-                title={`(${x}, ${y})`}
-                className="absolute bg-white hover:bg-gray-200 border border-gray-200"
-                style={{
-                  width: PIXEL_SIZE,
-                  height: PIXEL_SIZE,
-                  transform: `translateX(${column.start}px) translateY(${row.start}px)`,
-                }}
-              />
-            );
-          })
-        )}
+        <div
+          style={{
+            height: rowVirtualizer.getTotalSize(),
+            width: columnVirtualizer.getTotalSize(),
+            position: "relative",
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((row) =>
+            columnVirtualizer.getVirtualItems().map((column) => {
+              const x = column.index;
+              const y = row.index;
+              const pixelId = `${x}-${y}`;
+              return (
+                <div
+                  key={pixelId}
+                  title={`(${x}, ${y})`}
+                  className="absolute bg-white hover:bg-gray-200 border border-gray-200"
+                  style={{
+                    width: PIXEL_SIZE,
+                    height: PIXEL_SIZE,
+                    transform: `translateX(${column.start}px) translateY(${row.start}px)`,
+                  }}
+                />
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );
