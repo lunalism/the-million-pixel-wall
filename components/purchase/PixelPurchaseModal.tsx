@@ -1,5 +1,3 @@
-// components/purchase/PixelPurchaseModal.tsx
-
 "use client";
 
 import {
@@ -16,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface PixelPurchaseModalProps {
   open: boolean;
@@ -28,6 +26,20 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url); // 메모리 정리
+    } else if (imageUrl) {
+      setPreviewUrl(imageUrl);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [file, imageUrl]);
 
   if (!selectedPixel) return null;
 
@@ -37,9 +49,9 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
       name,
       message,
       file,
+      imageUrl,
     });
 
-    // 추후: supabase 업로드 및 결제 로직
     alert("준비 중입니다!");
     onClose();
   };
@@ -56,7 +68,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
 
         <div className="grid gap-4 py-4">
           <div>
-            <Label className="pb-2" htmlFor="name">Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
               id="name"
               placeholder="Your name or brand"
@@ -66,7 +78,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
           </div>
 
           <div>
-            <Label className="pb-2" htmlFor="message">Message</Label>
+            <Label htmlFor="message">Message</Label>
             <Textarea
               id="message"
               placeholder="Say something..."
@@ -75,8 +87,8 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
             />
           </div>
 
-          <div>
-            <Label className="pb-2" htmlFor="file">Upload Image</Label>
+          <div className="grid gap-2">
+            <Label htmlFor="file">Upload Image</Label>
             <Input
               id="file"
               type="file"
@@ -84,6 +96,27 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
               onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
           </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="imageUrl">Or enter image URL</Label>
+            <Input
+              id="imageUrl"
+              placeholder="https://example.com/your-image.png"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+          </div>
+
+          {previewUrl && (
+            <div className="mt-2">
+              <Label>Preview</Label>
+              <img
+                src={previewUrl}
+                alt="preview"
+                className="w-full max-h-48 object-contain border rounded"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-2">
