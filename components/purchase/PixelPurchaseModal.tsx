@@ -10,8 +10,13 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
-import { X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { X } from "lucide-react";
+
+import { useState } from "react";
 
 interface PixelPurchaseModalProps {
   open: boolean;
@@ -20,30 +25,76 @@ interface PixelPurchaseModalProps {
 }
 
 export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurchaseModalProps) {
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
   if (!selectedPixel) return null;
+
+  const handleSubmit = () => {
+    console.log({
+      pixel: selectedPixel,
+      name,
+      message,
+      file,
+    });
+
+    // 추후: supabase 업로드 및 결제 로직
+    alert("준비 중입니다!");
+    onClose();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Buy This Pixel</DialogTitle>
+          <DialogTitle>Buy Pixel at ({selectedPixel.x}, {selectedPixel.y})</DialogTitle>
           <DialogDescription>
-            You selected pixel at <strong>({selectedPixel.x}, {selectedPixel.y})</strong>.
+            Leave your mark on the Million Pixel Wall.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 text-sm text-gray-600">
-          This will be your permanent place on the Million Pixel Wall.
+        <div className="grid gap-4 py-4">
+          <div>
+            <Label className="pb-2" htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              placeholder="Your name or brand"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label className="pb-2" htmlFor="message">Message</Label>
+            <Textarea
+              id="message"
+              placeholder="Say something..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label className="pb-2" htmlFor="file">Upload Image</Label>
+            <Input
+              id="file"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+            />
+          </div>
         </div>
 
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button>Next</Button>
+          <Button onClick={handleSubmit}>
+            Purchase
+          </Button>
         </div>
 
-        {/* 'X' 버튼이 오른쪽 상단에 나타남 */}
         <DialogClose asChild>
           <button
             className="absolute right-4 top-4 text-gray-500 hover:text-gray-900 transition"
