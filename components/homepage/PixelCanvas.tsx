@@ -1,12 +1,10 @@
-// components/homepage/PixelCanvas.tsx
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { PixelPurchaseModal } from "@/components/purchase/PixelPurchaseModal";
 
 const GRID_SIZE = 1000;
-const PIXEL_SIZE = 15;
+const PIXEL_SIZE = 10;
 const SCALE = 0.2;
 
 export function PixelCanvas() {
@@ -61,16 +59,17 @@ export function PixelCanvas() {
 
   return (
     <div className="flex justify-center py-10 overflow-auto">
-      <div style={{ transform: `scale(${SCALE})`, transformOrigin: "top left" }}>
-        <canvas
-          ref={canvasRef}
-          width={GRID_SIZE * PIXEL_SIZE}
-          height={GRID_SIZE * PIXEL_SIZE}
-          className="cursor-crosshair"
-          onClick={handleCanvasClick}
-        />
-      </div>
-
+      <canvas
+        ref={canvasRef}
+        width={GRID_SIZE * PIXEL_SIZE}
+        height={GRID_SIZE * PIXEL_SIZE}
+        onClick={handleCanvasClick}
+        className="border shadow-md cursor-crosshair"
+        style={{
+          width: `${GRID_SIZE * PIXEL_SIZE * SCALE}px`,
+          height: `${GRID_SIZE * PIXEL_SIZE * SCALE}px`,
+        }}
+      />
       <PixelPurchaseModal
         open={isModalOpen}
         onClose={closeModal}
