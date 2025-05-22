@@ -58,6 +58,12 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
     onClose();
   };
 
+  const isFormValid =
+    name.trim().length > 0 &&
+    message.trim().length > 0 &&
+    ((imageSource === "file" && file) || (imageSource === "url" && imageUrl.trim().length > 0));
+
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -147,7 +153,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>Purchase</Button>
+          <Button onClick={handleSubmit} disabled={!isFormValid}>Purchase</Button>
         </div>
 
         <DialogClose asChild>
