@@ -1,19 +1,12 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface PixelPurchaseModalProps {
   open: boolean;
@@ -28,24 +21,49 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imageSource, setImageSource] = useState<ImageSource>("file");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (imageSource === "file" && file) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
       return () => URL.revokeObjectURL(url);
-    } else if (imageSource === "url" && imageUrl) {
-      setPreviewUrl(imageUrl);
+    } else if (imageSource === "url" && imageUrl.trim()) {
+      setPreviewUrl(imageUrl.trim());
     } else {
       setPreviewUrl(null);
     }
   }, [file, imageUrl, imageSource]);
 
+  useEffect(() => {
+    if (open) {
+      // 모달이 새로 열릴 때마다 초기화
+      setName("");
+      setMessage("");
+      setFile(null);
+      setImageUrl("");
+      setImageSource("file");
+      setPreviewUrl(null);
+      setSubmitted(false);
+    }
+  }, [open]);
+
   if (!selectedPixel) return null;
 
+  const isNameValid = name.trim().length > 0;
+  const isMessageValid = message.trim().length > 0;
+  const isImageValid =
+    (imageSource === "file" && file) || (imageSource === "url" && imageUrl.trim().length > 0);
+
+  const isFormValid = isNameValid && isMessageValid && isImageValid;
+
   const handleSubmit = () => {
+    setSubmitted(true);
+    if (!isFormValid) return;
+
     console.log({
       pixel: selectedPixel,
       name,
@@ -58,63 +76,77 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
     onClose();
   };
 
-  const isFormValid =
-    name.trim().length > 0 &&
-    message.trim().length > 0 &&
-    ((imageSource === "file" && file) || (imageSource === "url" && imageUrl.trim().length > 0));
-
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Buy Pixel at ({selectedPixel.x}, {selectedPixel.y})</DialogTitle>
+          <DialogTitle>
+            Buy Pixel at ({selectedPixel.x}, {selectedPixel.y})
+          </DialogTitle>
           <DialogDescription>
             Leave your mark on the Million Pixel Wall.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
+          {/* Name */}
           <div>
-            <Label className="pb-2" htmlFor="name">Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
               id="name"
-              placeholder="Your name or brand"
               value={name}
+              placeholder="Your name or brand"
               onChange={(e) => setName(e.target.value)}
             />
+            {submitted && !isNameValid && (
+              <p className="text-sm text-red-500 mt-1">Name is required.</p>
+            )}
           </div>
 
+          {/* Message */}
           <div>
-            <Label className="pb-2" htmlFor="message">Message</Label>
+            <Label htmlFor="message">Message</Label>
             <Textarea
               id="message"
-              placeholder="Say something..."
               value={message}
+              placeholder="Say something..."
               onChange={(e) => setMessage(e.target.value)}
             />
+            {submitted && !isMessageValid && (
+              <p className="text-sm text-red-500 mt-1">Message is required.</p>
+            )}
           </div>
 
-          <div className="grid gap-2">
-            <Label>Image Source</Label>
-            <div className="flex gap-2">
-              <Button
-                variant={imageSource === "file" ? "default" : "outline"}
-                onClick={() => setImageSource("file")}
-              >
+          {/* Image Type Selector */}
+          <div>
+            <Label>Image Input Type</Label>
+            <div className="flex items-center gap-4 mt-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="imageSource"
+                  value="file"
+                  checked={imageSource === "file"}
+                  onChange={() => setImageSource("file")}
+                />
                 Upload File
-              </Button>
-              <Button
-                variant={imageSource === "url" ? "default" : "outline"}
-                onClick={() => setImageSource("url")}
-              >
-                Enter URL
-              </Button>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="imageSource"
+                  value="url"
+                  checked={imageSource === "url"}
+                  onChange={() => setImageSource("url")}
+                />
+                Use Image URL
+              </label>
             </div>
           </div>
 
+          {/* File Upload or URL Input */}
           {imageSource === "file" && (
-            <div className="grid gap-2">
+            <div>
               <Label htmlFor="file">Upload Image</Label>
               <Input
                 id="file"
@@ -122,21 +154,28 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
               />
+              {submitted && !file && (
+                <p className="text-sm text-red-500 mt-1">Please upload an image file.</p>
+              )}
             </div>
           )}
 
           {imageSource === "url" && (
-            <div className="grid gap-2">
+            <div>
               <Label htmlFor="imageUrl">Image URL</Label>
               <Input
                 id="imageUrl"
-                placeholder="https://example.com/your-image.png"
                 value={imageUrl}
+                placeholder="https://example.com/image.png"
                 onChange={(e) => setImageUrl(e.target.value)}
               />
+              {submitted && !imageUrl.trim() && (
+                <p className="text-sm text-red-500 mt-1">Image URL is required.</p>
+              )}
             </div>
           )}
 
+          {/* Preview */}
           {previewUrl && (
             <div className="mt-2">
               <Label>Preview</Label>
@@ -153,7 +192,9 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={!isFormValid}>Purchase</Button>
+          <Button onClick={handleSubmit} disabled={!isFormValid}>
+            Purchase
+          </Button>
         </div>
 
         <DialogClose asChild>
