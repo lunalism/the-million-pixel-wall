@@ -14,6 +14,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,7 @@ export default function AdminReportsPage() {
   const [loading, setLoading] = useState(true);
   const [targetPixelId, setTargetPixelId] = useState<string | null>(null);
 
-  // 신고 리스트 불러오기
+  // 신고 데이터 불러오기
   const fetchReports = async () => {
     const { data, error } = await supabase
       .from("reports")
@@ -49,7 +50,6 @@ export default function AdminReportsPage() {
         ...item,
         pixel: Array.isArray(item.pixels) ? item.pixels[0] : item.pixels,
       }));
-
       setReports(normalized as Report[]);
     }
 
@@ -60,7 +60,7 @@ export default function AdminReportsPage() {
     fetchReports();
   }, []);
 
-  // 삭제 처리
+  // 픽셀 삭제
   const handleDeletePixel = async (pixelId: string) => {
     const { error } = await supabase.from("pixels").delete().eq("id", pixelId);
     if (error) {
@@ -68,13 +68,13 @@ export default function AdminReportsPage() {
       return;
     }
 
-    setTargetPixelId(null); // 모달 닫기
-    fetchReports(); // 리스트 갱신
+    setTargetPixelId(null);
+    fetchReports();
   };
 
   return (
     <div className="space-y-6">
-      {/* 제목 */}
+      {/* 헤더 */}
       <div className="space-y-1">
         <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
         <p className="text-muted-foreground">
@@ -82,7 +82,7 @@ export default function AdminReportsPage() {
         </p>
       </div>
 
-      {/* 리스트 */}
+      {/* 본문 */}
       {loading ? (
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="animate-spin h-4 w-4" />
@@ -101,7 +101,7 @@ export default function AdminReportsPage() {
                   🚩 Pixel at ({report.pixels.x}, {report.pixels.y})
                 </CardTitle>
 
-                {/* 삭제 확인 모달 트리거 */}
+                {/* 삭제 다이얼로그 */}
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button
@@ -113,9 +113,13 @@ export default function AdminReportsPage() {
                       삭제
                     </Button>
                   </DialogTrigger>
+
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
+                      <DialogDescription>
+                        이 픽셀은 영구적으로 삭제되며 복구할 수 없습니다.
+                      </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <Button
