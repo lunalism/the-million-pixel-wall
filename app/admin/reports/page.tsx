@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-// 신고 + 픽셀 조인된 데이터 타입 정의
 type Report = {
   id: string;
   reason: string;
@@ -23,43 +23,45 @@ export default function AdminReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchReports = async () => {
+    const { data, error } = await supabase
+      .from("reports")
+      .select("id, reason, created_at, pixels(id, x, y, image_url, name)")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      const normalized = (data as any[]).map((item) => ({
+        ...item,
+        pixel: Array.isArray(item.pixels) ? item.pixels[0] : item.pixels,
+      }));
+      setReports(normalized as Report[]);
+    }
+
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchReports = async () => {
-      // 신고 목록 + 해당 픽셀 정보 조인해서 가져오기
-      const { data, error } = await supabase
-        .from("reports")
-        .select("id, reason, created_at, pixels(id, x, y, image_url, name)")
-        .order("created_at", { ascending: false });
-
-      if (!error && data) {
-        // pixel이 배열로 들어오는 경우를 방지해 정상화
-        const normalized = (data as any[]).map((item) => ({
-          ...item,
-          pixel: Array.isArray(item.pixel) ? item.pixel[0] : item.pixel,
-        }));
-
-        setReports(normalized as Report[]);
-      } else {
-        console.error("🚨 Error fetching reports:", error);
-      }
-
-      setLoading(false);
-    };
-
     fetchReports();
   }, []);
 
+  const handleDeletePixel = async (pixelId: string) => {
+    const { error } = await supabase.from("pixels").delete().eq("id", pixelId);
+    if (error) {
+      console.error("❌ Error deleting pixel:", error);
+      return;
+    }
+
+    // 삭제 후 목록 갱신
+    fetchReports();
+  };
+
   return (
     <div className="space-y-6">
-      {/* 헤더 영역 */}
       <div className="space-y-1">
         <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
-        <p className="text-muted-foreground">
-          Review reported pixels submitted by users.
-        </p>
+        <p className="text-muted-foreground">Review and manage reported pixels.</p>
       </div>
 
-      {/* 로딩 or 리스트 */}
       {loading ? (
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="animate-spin h-4 w-4" />
@@ -73,10 +75,18 @@ export default function AdminReportsPage() {
         <div className="grid gap-4">
           {reports.map((report) => (
             <Card key={report.id}>
-              <CardHeader>
+              <CardHeader className="flex flex-row justify-between items-center">
                 <CardTitle>
                   🚩 Pixel at ({report.pixels.x}, {report.pixels.y})
                 </CardTitle>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDeletePixel(report.pixels.id)}
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  삭제
+                </Button>
               </CardHeader>
               <CardContent className="flex items-center gap-4">
                 <img
