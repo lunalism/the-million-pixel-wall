@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
-
 import { useState, useEffect } from "react";
 
 interface PixelPurchaseModalProps {
@@ -22,24 +21,27 @@ interface PixelPurchaseModalProps {
   selectedPixel: { x: number; y: number } | null;
 }
 
+type ImageSource = "file" | "url";
+
 export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurchaseModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageSource, setImageSource] = useState<ImageSource>("file");
 
   useEffect(() => {
-    if (file) {
+    if (imageSource === "file" && file) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-      return () => URL.revokeObjectURL(url); // 메모리 정리
-    } else if (imageUrl) {
+      return () => URL.revokeObjectURL(url);
+    } else if (imageSource === "url" && imageUrl) {
       setPreviewUrl(imageUrl);
     } else {
       setPreviewUrl(null);
     }
-  }, [file, imageUrl]);
+  }, [file, imageUrl, imageSource]);
 
   if (!selectedPixel) return null;
 
@@ -48,8 +50,8 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
       pixel: selectedPixel,
       name,
       message,
-      file,
-      imageUrl,
+      file: imageSource === "file" ? file : null,
+      imageUrl: imageSource === "url" ? imageUrl : null,
     });
 
     alert("준비 중입니다!");
@@ -68,7 +70,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
 
         <div className="grid gap-4 py-4">
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label className="pb-2" htmlFor="name">Name</Label>
             <Input
               id="name"
               placeholder="Your name or brand"
@@ -78,7 +80,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
           </div>
 
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label className="pb-2" htmlFor="message">Message</Label>
             <Textarea
               id="message"
               placeholder="Say something..."
@@ -88,24 +90,46 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="file">Upload Image</Label>
-            <Input
-              id="file"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
-            />
+            <Label>Image Source</Label>
+            <div className="flex gap-2">
+              <Button
+                variant={imageSource === "file" ? "default" : "outline"}
+                onClick={() => setImageSource("file")}
+              >
+                Upload File
+              </Button>
+              <Button
+                variant={imageSource === "url" ? "default" : "outline"}
+                onClick={() => setImageSource("url")}
+              >
+                Enter URL
+              </Button>
+            </div>
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="imageUrl">Or enter image URL</Label>
-            <Input
-              id="imageUrl"
-              placeholder="https://example.com/your-image.png"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-            />
-          </div>
+          {imageSource === "file" && (
+            <div className="grid gap-2">
+              <Label htmlFor="file">Upload Image</Label>
+              <Input
+                id="file"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
+            </div>
+          )}
+
+          {imageSource === "url" && (
+            <div className="grid gap-2">
+              <Label htmlFor="imageUrl">Image URL</Label>
+              <Input
+                id="imageUrl"
+                placeholder="https://example.com/your-image.png"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+              />
+            </div>
+          )}
 
           {previewUrl && (
             <div className="mt-2">
@@ -123,9 +147,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>
-            Purchase
-          </Button>
+          <Button onClick={handleSubmit}>Purchase</Button>
         </div>
 
         <DialogClose asChild>
