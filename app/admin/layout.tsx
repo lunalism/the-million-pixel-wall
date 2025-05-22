@@ -1,50 +1,50 @@
 // app/admin/layout.tsx
 
-import "@/styles/globals.css";
+"use client";
+
 import { ReactNode } from "react";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { name: "Overview", href: "/admin" },
+  { name: "Pixels", href: "/admin/pixels" },
+  { name: "Reports", href: "/admin/reports" },
+];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <div className="flex flex-col sm:flex-row sm:space-x-0">
-        {/* 사이드바 */}
-        <aside className="w-full sm:w-64 bg-white border-r shadow-sm">
-          <div className="h-16 flex items-center justify-center border-b px-6 font-bold text-lg">
-            🧱 Admin Wall
-          </div>
-          <nav className="flex flex-col gap-2 p-4">
-            <Link
-              href="/admin"
-              className={cn(
-                "text-sm font-medium text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/admin/pixels"
-              className={cn(
-                "text-sm font-medium text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Pixels
-            </Link>
-            <Link
-              href="/admin/reports"
-              className={cn(
-                "text-sm font-medium text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Reports
-            </Link>
-          </nav>
-        </aside>
+  const pathname = usePathname();
 
-        {/* 메인 컨텐츠 */}
-        <main className="flex-1 p-6 overflow-auto">{children}</main>
-      </div>
+  return (
+    <div className="min-h-screen bg-muted/50">
+      {/* 상단 헤더 */}
+      <header className="border-b bg-background">
+        <div className="container flex h-14 items-center justify-between px-4 pl-6 pr-6">
+          <div className="font-bold text-lg">🧱 Admin</div>
+
+          {/* 내비게이션 탭 */}
+          <nav className="flex gap-6 text-sm">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "transition-colors hover:text-primary",
+                  pathname === item.href ? "text-primary font-semibold" : "text-muted-foreground"
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      {/* 메인 콘텐츠 */}
+      <main className="w-full max-w-screen-lg mx-auto py-10 px-4">
+        {children}
+      </main>
     </div>
   );
 }

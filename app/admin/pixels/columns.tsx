@@ -5,6 +5,7 @@
 import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
+import Image from "next/image";
 
 // Pixel 타입
 export type Pixel = {
@@ -44,11 +45,7 @@ export const columns: ColumnDef<Pixel>[] = [
     accessorKey: "image_url",
     header: "이미지",
     cell: ({ row }) => (
-      <img
-        src={row.original.image_url}
-        alt="preview"
-        className="w-10 h-10 rounded object-cover border"
-      />
+      <Image src={row.original.image_url} alt="preview" width={64} height={64} className="w-10 h-10 rounded object-cover border" />
     ),
   },
   {
