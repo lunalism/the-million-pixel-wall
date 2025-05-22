@@ -1,3 +1,5 @@
+// components/purchase/PixelPurchaseModal.tsx
+
 "use client";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
@@ -9,23 +11,36 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
+type ImageSource = "file" | "url";
+
 interface PixelPurchaseModalProps {
   open: boolean;
   onClose: () => void;
   selectedPixel: { x: number; y: number } | null;
+  onPurchaseSuccess: (pixel: any) => void;
 }
 
-type ImageSource = "file" | "url";
-
-export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurchaseModalProps) {
+export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuccess }: PixelPurchaseModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [imageSource, setImageSource] = useState<ImageSource>("file");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      // 🧼 모달 열릴 때마다 폼 초기화
+      setName("");
+      setMessage("");
+      setFile(null);
+      setImageUrl("");
+      setImageSource("file");
+      setPreviewUrl(null);
+      setSubmitted(false);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (imageSource === "file" && file) {
@@ -39,67 +54,56 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
     }
   }, [file, imageUrl, imageSource]);
 
-  useEffect(() => {
-    if (open) {
-      // 모달이 새로 열릴 때마다 초기화
-      setName("");
-      setMessage("");
-      setFile(null);
-      setImageUrl("");
-      setImageSource("file");
-      setPreviewUrl(null);
-      setSubmitted(false);
-    }
-  }, [open]);
-
   if (!selectedPixel) return null;
 
-  const isNameValid = name.trim().length > 0;
-  const isMessageValid = message.trim().length > 0;
-  const isImageValid =
-    (imageSource === "file" && file) || (imageSource === "url" && imageUrl.trim().length > 0);
-
-  const isFormValid = isNameValid && isMessageValid && isImageValid;
+  const isFormValid =
+    name.trim() &&
+    message.trim() &&
+    (imageSource === "file" ? file : imageUrl.trim());
 
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     const filePath = `${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage
       .from("pixel-images")
       .upload(filePath, file);
-  
+
     if (error) {
       console.error("Upload error:", error);
       return null;
     }
-  
+
     return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pixel-images/${filePath}`;
   };
-  
+
   const handleSubmit = async () => {
     setSubmitted(true);
     if (!isFormValid || !selectedPixel) return;
 
-  const image_path =
-    imageSource === "file"
-      ? await uploadImageToSupabase(file!) // 아래 함수 참고
-      : imageUrl;
+    let finalImageUrl = imageUrl;
+    if (imageSource === "file" && file) {
+      const uploaded = await uploadImageToSupabase(file);
+      if (!uploaded) return alert("Image upload failed");
+      finalImageUrl = uploaded;
+    }
 
-    const { error } = await supabase.from("pixels").insert([
-      {
+    const { data, error } = await supabase
+      .from("pixels")
+      .insert({
         x: selectedPixel.x,
         y: selectedPixel.y,
         name,
         message,
-        image_url: image_path,
-      },
-    ]);
+        image_url: finalImageUrl,
+      })
+      .select()
+      .single();
 
     if (error) {
-      console.error("Supabase Insert Error:", error);
-      alert("Failed to save. Please try again.");
+      console.error("Save error:", error);
+      alert("Failed to save pixel!");
     } else {
-      alert("Successfully saved!");
-      onClose();
+      onPurchaseSuccess(data); // ✅ 저장 성공 시 PixelGrid에 반영
+      onClose(); // 모달 닫기
     }
   };
 
@@ -116,56 +120,50 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {/* Name */}
+          {/* 이름 */}
           <div>
             <Label className="pb-2" htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={name}
-              placeholder="Your name or brand"
-              onChange={(e) => setName(e.target.value)}
-            />
-            {submitted && !isNameValid && (
+            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+            {submitted && !name.trim() && (
               <p className="text-sm text-red-500 mt-1">Name is required.</p>
             )}
           </div>
 
-          {/* Message */}
+          {/* 메시지 */}
           <div>
             <Label className="pb-2" htmlFor="message">Message</Label>
             <Textarea
               id="message"
               value={message}
-              placeholder="Say something..."
               onChange={(e) => setMessage(e.target.value)}
             />
-            {submitted && !isMessageValid && (
+            {submitted && !message.trim() && (
               <p className="text-sm text-red-500 mt-1">Message is required.</p>
             )}
           </div>
 
-          {/* Image Type Selector */}
+          {/* 이미지 입력 타입 선택 */}
           <div>
-            <Label>Image Input Type</Label>
+            <Label className="pb-2">Image Input Type</Label>
             <div className="flex gap-2 mt-2">
               <Button
+                type="button"
                 variant={imageSource === "file" ? "default" : "outline"}
                 onClick={() => setImageSource("file")}
-                type="button"
               >
                 Upload File
               </Button>
               <Button
+                type="button"
                 variant={imageSource === "url" ? "default" : "outline"}
                 onClick={() => setImageSource("url")}
-                type="button"
               >
-                Use Image URL
+                Use URL
               </Button>
             </div>
           </div>
 
-          {/* File Upload or URL Input */}
+          {/* 파일 업로드 or URL */}
           {imageSource === "file" && (
             <div>
               <Label className="pb-2" htmlFor="file">Upload Image</Label>
@@ -176,18 +174,16 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
               />
               {submitted && !file && (
-                <p className="text-sm text-red-500 mt-1">Please upload an image file.</p>
+                <p className="text-sm text-red-500 mt-1">Please upload a file.</p>
               )}
             </div>
           )}
-
           {imageSource === "url" && (
             <div>
               <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
               <Input
                 id="imageUrl"
                 value={imageUrl}
-                placeholder="https://example.com/image.png"
                 onChange={(e) => setImageUrl(e.target.value)}
               />
               {submitted && !imageUrl.trim() && (
@@ -196,10 +192,10 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
             </div>
           )}
 
-          {/* Preview */}
+          {/* 미리보기 */}
           {previewUrl && (
             <div className="mt-2">
-              <Label>Preview</Label>
+              <Label className="pb-2">Preview</Label>
               <img
                 src={previewUrl}
                 alt="preview"
@@ -220,7 +216,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
 
         <DialogClose asChild>
           <button
-            className="absolute right-4 top-4 text-gray-500 hover:text-gray-900 transition"
+            className="absolute right-4 top-4 text-gray-500 hover:text-gray-900"
             aria-label="Close"
           >
             <X size={16} />
