@@ -11,6 +11,7 @@ const navItems = [
   { name: "Overview", href: "/admin" },
   { name: "Pixels", href: "/admin/pixels" },
   { name: "Reports", href: "/admin/reports" },
+  { name: "Forbidden Words", href: "/admin/forbidden-words" }
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

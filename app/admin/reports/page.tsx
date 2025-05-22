@@ -114,9 +114,9 @@ export default function AdminReportsPage() {
             onClick={() => setStatusFilter(status)}
           >
             {{
-              pending: "미처리",
-              approved: "승인됨",
-              removed: "삭제됨"
+              pending: "Pending",
+              approved: "Approved",
+              removed: "Deleted"
             }[status]}
           </Button>
         ))}
