@@ -122,7 +122,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
         <div className="grid gap-4 py-4">
           {/* 이름 */}
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label className="pb-2" htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             {submitted && !name.trim() && (
               <p className="text-sm text-red-500 mt-1">Name is required.</p>
@@ -131,7 +131,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
           {/* 메시지 */}
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label className="pb-2" htmlFor="message">Message</Label>
             <Textarea
               id="message"
               value={message}
@@ -144,7 +144,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
           {/* 이미지 입력 타입 선택 */}
           <div>
-            <Label>Image Input Type</Label>
+            <Label className="pb-2">Image Input Type</Label>
             <div className="flex gap-2 mt-2">
               <Button
                 type="button"
@@ -166,7 +166,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
           {/* 파일 업로드 or URL */}
           {imageSource === "file" && (
             <div>
-              <Label htmlFor="file">Upload Image</Label>
+              <Label className="pb-2" htmlFor="file">Upload Image</Label>
               <Input
                 id="file"
                 type="file"
@@ -180,7 +180,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
           )}
           {imageSource === "url" && (
             <div>
-              <Label htmlFor="imageUrl">Image URL</Label>
+              <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
               <Input
                 id="imageUrl"
                 value={imageUrl}
@@ -195,7 +195,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
           {/* 미리보기 */}
           {previewUrl && (
             <div className="mt-2">
-              <Label>Preview</Label>
+              <Label className="pb-2">Preview</Label>
               <img
                 src={previewUrl}
                 alt="preview"
