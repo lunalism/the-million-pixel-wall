@@ -1,20 +1,22 @@
 // components/homepage/HowItWorks.tsx
 
-import { FaMousePointer, FaImage, FaPaypal } from "react-icons/fa";
+import { FaRegImage } from "react-icons/fa";
+import { FiMousePointer } from "react-icons/fi";
+import { RiPaypalLine } from "react-icons/ri";
 
 const steps = [
   {
-    icon: <FaMousePointer size={24} />,
+    icon: <FiMousePointer size={24} />,
     title: "Select Pixels",
     desc: "Click the grid and choose your spot. You own it forever.",
   },
   {
-    icon: <FaImage size={24} />,
+    icon: <FaRegImage size={24} />,
     title: "Upload Your Ad",
     desc: "Add your image and a link to your brand, project, or dream.",
   },
   {
-    icon: <FaPaypal size={24} />,
+    icon: <RiPaypalLine size={24} />,
     title: "Pay with PayPal",
     desc: "Complete the checkout and your pixels go live—instantly.",
   },
@@ -33,7 +35,7 @@ export function HowItWorks() {
             className="flex flex-col items-center border rounded-lg p-6 hover:shadow-md transition"
           >
             {/* ✅ 아이콘: 검정색 */}
-            <div className="text-black mb-4">{step.icon}</div>
+            <div className="text-outline mb-4">{step.icon}</div>
 
             {/* ✅ 타이틀: 얇은 글꼴 */}
             <h3 className="text-lg font-light mb-1">{step.title}</h3>
