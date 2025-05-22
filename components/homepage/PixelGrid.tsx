@@ -37,6 +37,10 @@ export function PixelGrid() {
     };
 
     fetchPurchasedPixels();
+
+    const interval = setInterval(fetchPurchasedPixels, 30000); // 30초 polling
+
+    return () => clearInterval(interval); // 언마운트 시 정리
   }, []);
 
   // ✅ 픽셀 클릭 → 구매 모달 열기
