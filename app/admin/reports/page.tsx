@@ -2,9 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Trash2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Loader2, Trash2 } from "lucide-react";
 
 type Report = {
   id: string;
@@ -22,7 +35,9 @@ type Report = {
 export default function AdminReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [targetPixelId, setTargetPixelId] = useState<string | null>(null);
 
+  // 신고 리스트 불러오기
   const fetchReports = async () => {
     const { data, error } = await supabase
       .from("reports")
@@ -34,6 +49,7 @@ export default function AdminReportsPage() {
         ...item,
         pixel: Array.isArray(item.pixels) ? item.pixels[0] : item.pixels,
       }));
+
       setReports(normalized as Report[]);
     }
 
@@ -44,6 +60,7 @@ export default function AdminReportsPage() {
     fetchReports();
   }, []);
 
+  // 삭제 처리
   const handleDeletePixel = async (pixelId: string) => {
     const { error } = await supabase.from("pixels").delete().eq("id", pixelId);
     if (error) {
@@ -51,17 +68,21 @@ export default function AdminReportsPage() {
       return;
     }
 
-    // 삭제 후 목록 갱신
-    fetchReports();
+    setTargetPixelId(null); // 모달 닫기
+    fetchReports(); // 리스트 갱신
   };
 
   return (
     <div className="space-y-6">
+      {/* 제목 */}
       <div className="space-y-1">
         <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
-        <p className="text-muted-foreground">Review and manage reported pixels.</p>
+        <p className="text-muted-foreground">
+          Review and manage reported pixels.
+        </p>
       </div>
 
+      {/* 리스트 */}
       {loading ? (
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="animate-spin h-4 w-4" />
@@ -79,15 +100,43 @@ export default function AdminReportsPage() {
                 <CardTitle>
                   🚩 Pixel at ({report.pixels.x}, {report.pixels.y})
                 </CardTitle>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDeletePixel(report.pixels.id)}
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  삭제
-                </Button>
+
+                {/* 삭제 확인 모달 트리거 */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setTargetPixelId(report.pixels.id)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      삭제
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => setTargetPixelId(null)}
+                      >
+                        취소
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          if (targetPixelId) handleDeletePixel(targetPixelId);
+                        }}
+                      >
+                        삭제 확정
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </CardHeader>
+
               <CardContent className="flex items-center gap-4">
                 <img
                   src={report.pixels.image_url}
