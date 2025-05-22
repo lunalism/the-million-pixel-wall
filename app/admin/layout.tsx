@@ -20,10 +20,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-muted/50">
       {/* 상단 헤더 */}
       <header className="border-b bg-background">
-        <div className="container flex h-14 items-center justify-between">
+        <div className="container flex h-14 items-center justify-between px-4 pl-6 pr-6">
           <div className="font-bold text-lg">🧱 Admin</div>
 
-          {/* 상단 내비게이션 탭 */}
+          {/* 내비게이션 탭 */}
           <nav className="flex gap-6 text-sm">
             {navItems.map((item) => (
               <Link
@@ -42,7 +42,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* 메인 콘텐츠 */}
-      <main className="container py-8">{children}</main>
+      <main className="w-full max-w-screen-lg mx-auto py-10 px-4">
+        {children}
+      </main>
     </div>
   );
 }
