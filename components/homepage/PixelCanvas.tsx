@@ -1,11 +1,13 @@
+// components/homepage/PixelCanvas.tsx
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { PixelPurchaseModal } from "@/components/purchase/PixelPurchaseModal";
 
 const GRID_SIZE = 1000;
-const PIXEL_SIZE = 10;
-const SCALE = 0.2; // 축소 비율
+const PIXEL_SIZE = 15;
+const SCALE = 0.2;
 
 export function PixelCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -34,7 +36,7 @@ export function PixelCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // 배경색 초기화
+    // 배경
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, GRID_SIZE * PIXEL_SIZE, GRID_SIZE * PIXEL_SIZE);
 
@@ -42,7 +44,12 @@ export function PixelCanvas() {
     ctx.strokeStyle = "#e5e7eb";
     for (let y = 0; y < GRID_SIZE; y++) {
       for (let x = 0; x < GRID_SIZE; x++) {
-        ctx.strokeRect(x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+        ctx.strokeRect(
+          x * PIXEL_SIZE,
+          y * PIXEL_SIZE,
+          PIXEL_SIZE,
+          PIXEL_SIZE
+        );
       }
     }
   }, []);
@@ -54,17 +61,15 @@ export function PixelCanvas() {
 
   return (
     <div className="flex justify-center py-10 overflow-auto">
-      <canvas
-        ref={canvasRef}
-        width={GRID_SIZE * PIXEL_SIZE}
-        height={GRID_SIZE * PIXEL_SIZE}
-        style={{
-          transform: `scale(${SCALE})`,
-          transformOrigin: "top left",
-        }}
-        className="border shadow-md cursor-crosshair"
-        onClick={handleCanvasClick}
-      />
+      <div style={{ transform: `scale(${SCALE})`, transformOrigin: "top left" }}>
+        <canvas
+          ref={canvasRef}
+          width={GRID_SIZE * PIXEL_SIZE}
+          height={GRID_SIZE * PIXEL_SIZE}
+          className="cursor-crosshair"
+          onClick={handleCanvasClick}
+        />
+      </div>
 
       <PixelPurchaseModal
         open={isModalOpen}
