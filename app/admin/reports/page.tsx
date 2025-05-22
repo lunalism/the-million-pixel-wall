@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
+
 import {
   Dialog,
   DialogTrigger,
@@ -17,9 +19,12 @@ import {
   DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
 import { Loader2, Trash2 } from "lucide-react";
+import { toast } from "sonner"; // ✅ 최신 toast 라이브러리
 
+// 신고 + 픽셀 정보를 함께 포함한 타입 정의
 type Report = {
   id: string;
   reason: string;
@@ -38,7 +43,7 @@ export default function AdminReportsPage() {
   const [loading, setLoading] = useState(true);
   const [targetPixelId, setTargetPixelId] = useState<string | null>(null);
 
-  // 신고 데이터 불러오기
+  // Supabase에서 신고 리스트 불러오기
   const fetchReports = async () => {
     const { data, error } = await supabase
       .from("reports")
@@ -50,6 +55,7 @@ export default function AdminReportsPage() {
         ...item,
         pixel: Array.isArray(item.pixels) ? item.pixels[0] : item.pixels,
       }));
+
       setReports(normalized as Report[]);
     }
 
@@ -60,21 +66,23 @@ export default function AdminReportsPage() {
     fetchReports();
   }, []);
 
-  // 픽셀 삭제
+  // 픽셀 삭제 + 토스트 알림
   const handleDeletePixel = async (pixelId: string) => {
     const { error } = await supabase.from("pixels").delete().eq("id", pixelId);
     if (error) {
       console.error("❌ Error deleting pixel:", error);
+      toast.error("픽셀 삭제 중 오류가 발생했습니다.");
       return;
     }
 
+    toast.success("픽셀이 성공적으로 삭제되었습니다.");
     setTargetPixelId(null);
     fetchReports();
   };
 
   return (
     <div className="space-y-6">
-      {/* 헤더 */}
+      {/* 페이지 타이틀 */}
       <div className="space-y-1">
         <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
         <p className="text-muted-foreground">
@@ -82,7 +90,7 @@ export default function AdminReportsPage() {
         </p>
       </div>
 
-      {/* 본문 */}
+      {/* 리스트 렌더링 */}
       {loading ? (
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="animate-spin h-4 w-4" />
@@ -101,7 +109,7 @@ export default function AdminReportsPage() {
                   🚩 Pixel at ({report.pixels.x}, {report.pixels.y})
                 </CardTitle>
 
-                {/* 삭제 다이얼로그 */}
+                {/* 삭제 모달 트리거 */}
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button
@@ -114,6 +122,7 @@ export default function AdminReportsPage() {
                     </Button>
                   </DialogTrigger>
 
+                  {/* 삭제 확인 다이얼로그 */}
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>정말로 삭제하시겠습니까?</DialogTitle>

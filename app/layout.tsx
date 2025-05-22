@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "The Million Pixel Wall",
@@ -21,6 +22,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans">
         {children}
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );
