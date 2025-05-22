@@ -24,7 +24,7 @@ export function PurchasedPixelModal({ open, onClose, pixel }: PurchasedPixelModa
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            픽셀 상세 정보
+            Pixel Details
           </DialogTitle>
         </DialogHeader>
 
@@ -32,23 +32,23 @@ export function PurchasedPixelModal({ open, onClose, pixel }: PurchasedPixelModa
           <div className="flex items-center gap-4">
             <Image src={pixel.image_url} alt={pixel.name} width={64} height={64} className="rounded border object-cover" />
             <div>
-              <p><strong>위치:</strong> ({pixel.x}, {pixel.y})</p>
-              <p><strong>이름:</strong> {pixel.name}</p>
-              <p><strong>메시지:</strong> {pixel.message}</p>
+              <p><strong>Position:</strong> ({pixel.x}, {pixel.y})</p>
+              <p><strong>Name:</strong> {pixel.name}</p>
+              <p><strong>Message:</strong> {pixel.message}</p>
             </div>
           </div>
         </div>
 
         <DialogFooter className="pt-4 gap-2 justify-end">
           <Button variant="outline" onClick={onClose}>
-            닫기
+            Close
           </Button>
           <Button variant="destructive" onClick={() => {
               // 여기서 신고 폼 모달로 전환하거나 상태 전환
-              console.log("🚩 신고 시작");
+              console.log("🚩 Report Start");
             }}
           >
-            🚩 신고하기
+            🚩 Report
           </Button>
         </DialogFooter>
       </DialogContent>
