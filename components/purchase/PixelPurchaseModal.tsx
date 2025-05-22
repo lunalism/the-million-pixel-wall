@@ -1,6 +1,17 @@
 // components/purchase/PixelPurchaseModal.tsx
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+"use client";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PixelPurchaseModalProps {
   open: boolean;
@@ -13,12 +24,34 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Buy Pixel ({selectedPixel.x}, {selectedPixel.y})</DialogTitle>
+          <DialogTitle>Buy This Pixel</DialogTitle>
+          <DialogDescription>
+            You selected pixel at <strong>({selectedPixel.x}, {selectedPixel.y})</strong>.
+          </DialogDescription>
         </DialogHeader>
-        <p>This pixel can be yours forever.</p>
-        {/* 이후 이미지 업로드, 링크 입력, 결제 버튼 등 추가 */}
+
+        <div className="py-4 text-sm text-gray-600">
+          This will be your permanent place on the Million Pixel Wall.
+        </div>
+
+        <div className="flex justify-end space-x-2">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button>Next</Button>
+        </div>
+
+        {/* 'X' 버튼이 오른쪽 상단에 나타남 */}
+        <DialogClose asChild>
+          <button
+            className="absolute right-4 top-4 text-gray-500 hover:text-gray-900 transition"
+            aria-label="Close"
+          >
+            <X size={16} />
+          </button>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
