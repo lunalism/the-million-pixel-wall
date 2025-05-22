@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 interface PixelPurchaseModalProps {
   open: boolean;
@@ -60,20 +61,46 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
 
   const isFormValid = isNameValid && isMessageValid && isImageValid;
 
-  const handleSubmit = () => {
+  const uploadImageToSupabase = async (file: File): Promise<string | null> => {
+    const filePath = `${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage
+      .from("pixel-images")
+      .upload(filePath, file);
+  
+    if (error) {
+      console.error("Upload error:", error);
+      return null;
+    }
+  
+    return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pixel-images/${filePath}`;
+  };
+  
+  const handleSubmit = async () => {
     setSubmitted(true);
-    if (!isFormValid) return;
+    if (!isFormValid || !selectedPixel) return;
 
-    console.log({
-      pixel: selectedPixel,
-      name,
-      message,
-      file: imageSource === "file" ? file : null,
-      imageUrl: imageSource === "url" ? imageUrl : null,
-    });
+  const image_path =
+    imageSource === "file"
+      ? await uploadImageToSupabase(file!) // 아래 함수 참고
+      : imageUrl;
 
-    alert("준비 중입니다!");
-    onClose();
+    const { error } = await supabase.from("pixels").insert([
+      {
+        x: selectedPixel.x,
+        y: selectedPixel.y,
+        name,
+        message,
+        image_url: image_path,
+      },
+    ]);
+
+    if (error) {
+      console.error("Supabase Insert Error:", error);
+      alert("Failed to save. Please try again.");
+    } else {
+      alert("Successfully saved!");
+      onClose();
+    }
   };
 
   return (
