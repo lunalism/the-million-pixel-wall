@@ -91,7 +91,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
         <div className="grid gap-4 py-4">
           {/* Name */}
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label className="pb-2" htmlFor="name">Name</Label>
             <Input
               id="name"
               value={name}
@@ -105,7 +105,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
 
           {/* Message */}
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label className="pb-2" htmlFor="message">Message</Label>
             <Textarea
               id="message"
               value={message}
@@ -120,34 +120,28 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
           {/* Image Type Selector */}
           <div>
             <Label>Image Input Type</Label>
-            <div className="flex items-center gap-4 mt-2">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="imageSource"
-                  value="file"
-                  checked={imageSource === "file"}
-                  onChange={() => setImageSource("file")}
-                />
+            <div className="flex gap-2 mt-2">
+              <Button
+                variant={imageSource === "file" ? "default" : "outline"}
+                onClick={() => setImageSource("file")}
+                type="button"
+              >
                 Upload File
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="imageSource"
-                  value="url"
-                  checked={imageSource === "url"}
-                  onChange={() => setImageSource("url")}
-                />
+              </Button>
+              <Button
+                variant={imageSource === "url" ? "default" : "outline"}
+                onClick={() => setImageSource("url")}
+                type="button"
+              >
                 Use Image URL
-              </label>
+              </Button>
             </div>
           </div>
 
           {/* File Upload or URL Input */}
           {imageSource === "file" && (
             <div>
-              <Label htmlFor="file">Upload Image</Label>
+              <Label className="pb-2" htmlFor="file">Upload Image</Label>
               <Input
                 id="file"
                 type="file"
@@ -162,7 +156,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel }: PixelPurcha
 
           {imageSource === "url" && (
             <div>
-              <Label htmlFor="imageUrl">Image URL</Label>
+              <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
               <Input
                 id="imageUrl"
                 value={imageUrl}
