@@ -7,6 +7,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, Check } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 // 신고 + 픽셀 정보 타입 정의
 type Report = {
@@ -161,7 +162,7 @@ export default function AdminReportsPage() {
                             </CardHeader>
 
                             <CardContent className="flex items-center gap-4">
-                                <img src={report.pixels.image_url} alt="pixel" className="w-16 h-16 border rounded object-cover" />
+                                <Image src={report.pixels.image_url} alt="pixel" width={64} height={64} className="w-16 h-16 border rounded object-cover" />
                                 <div className="text-sm space-y-1">
                                     <p><strong>이름:</strong> {report.pixels.name}</p>
                                     <p><strong>신고 사유:</strong> {report.reason}</p>

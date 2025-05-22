@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Loader2, ImageIcon, Flag, SquareStack } from "lucide-react";
 import { Pixel } from "./pixels/columns";
+import Image from "next/image";
 
 export default function AdminOverviewPage() {
   const [pixels, setPixels] = useState<Pixel[]>([]);
@@ -76,13 +77,7 @@ export default function AdminOverviewPage() {
         <h3 className="text-lg font-semibold mb-2">Recent Pixels</h3>
         <div className="grid grid-cols-5 gap-2">
           {recent.map((pixel) => (
-            <img
-              key={pixel.id}
-              src={pixel.image_url}
-              alt={pixel.name}
-              title={`${pixel.name}: ${pixel.message}`}
-              className="w-16 h-16 rounded border object-cover"
-            />
+            <Image key={pixel.id} src={pixel.image_url} alt={pixel.name} title={`${pixel.name}: ${pixel.message}`} width={64} height={64} className="w-16 h-16 rounded border object-cover" />
           ))}
         </div>
       </div>
