@@ -3,8 +3,6 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ImageIcon, Flag, SquareStack } from "lucide-react";
 import { Pixel } from "./pixels/columns";
 import Image from "next/image";
 import { ReportStats } from "@/components/admin/ReportStats";
