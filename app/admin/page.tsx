@@ -1,3 +1,4 @@
+// app/admin/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Loader2, ImageIcon, Flag, SquareStack } from "lucide-react";
 import { Pixel } from "./pixels/columns";
 import Image from "next/image";
+import { ReportStats } from "@/components/admin/ReportStats";
 
 export default function AdminOverviewPage() {
   const [pixels, setPixels] = useState<Pixel[]>([]);
@@ -72,12 +74,23 @@ export default function AdminOverviewPage() {
         </Card>
       </div>
 
+      {/* 📊 신고 통계 카드 */}
+      <ReportStats />
+
       {/* 최근 이미지 */}
       <div>
         <h3 className="text-lg font-semibold mb-2">Recent Pixels</h3>
         <div className="grid grid-cols-5 gap-2">
           {recent.map((pixel) => (
-            <Image key={pixel.id} src={pixel.image_url} alt={pixel.name} title={`${pixel.name}: ${pixel.message}`} width={64} height={64} className="w-16 h-16 rounded border object-cover" />
+            <Image
+              key={pixel.id}
+              src={pixel.image_url}
+              alt={pixel.name}
+              title={`${pixel.name}: ${pixel.message}`}
+              width={64}
+              height={64}
+              className="w-16 h-16 rounded border object-cover"
+            />
           ))}
         </div>
       </div>
