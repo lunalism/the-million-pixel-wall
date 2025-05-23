@@ -6,15 +6,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ForbiddenWordList } from "@/components/admin/ForbiddenWordList";
 
 export default function ForbiddenWordsPage() {
     const [words, setWords] = useState<string[]>([]); // 전체 금지어 리스트
@@ -23,14 +16,13 @@ export default function ForbiddenWordsPage() {
     const [confirmOpen, setConfirmOpen] = useState(false); // 삭제 확인 모달 상태
     const [selectedWord, setSelectedWord] = useState<string | null>(null); // 삭제 대상 단어
 
-    // 🔄 페이지 로드 시 금지어 리스트 로드
     useEffect(() => {
         fetchWords();
     }, []);
 
-    // 🔍 Supabase에서 금지어 리스트 가져오기
     const fetchWords = async () => {
         const { data, error } = await supabase.from("forbidden_words").select("word");
+        
         if (error) {
         toast.error("Failed to load forbidden words.");
         } else {
@@ -38,7 +30,6 @@ export default function ForbiddenWordsPage() {
         }
     };
 
-    // ➕ 금지어 추가
     const addWord = async () => {
         if (!newWord.trim()) return;
         const { error } = await supabase.from("forbidden_words").insert({ word: newWord.trim() });
@@ -51,13 +42,11 @@ export default function ForbiddenWordsPage() {
         }
     };
 
-    // ❌ 삭제 모달 열기
     const confirmDelete = (word: string) => {
         setSelectedWord(word);
         setConfirmOpen(true);
     };
 
-    // ✅ 실제 삭제 처리
     const deleteWord = async () => {
         if (!selectedWord) return;
         const { error } = await supabase.from("forbidden_words").delete().eq("word", selectedWord);
@@ -71,55 +60,44 @@ export default function ForbiddenWordsPage() {
         setSelectedWord(null);
     };
 
-    // 🔍 검색 필터링된 리스트
     const filteredWords = words.filter((word) => word.toLowerCase().includes(searchTerm.toLowerCase()));
 
     return (
         <div className="max-w-xl mx-auto space-y-6 py-10">
-        <h1 className="text-2xl font-bold">Manage Forbidden Words</h1>
+            <h1 className="text-2xl font-bold">Manage Forbidden Words</h1>
 
-        {/* 추가 및 검색 입력창 */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex gap-2 flex-1">
-            <Input
-                value={newWord}
-                onChange={(e) => setNewWord(e.target.value)}
-                placeholder="Enter new word"
-            />
-            <Button onClick={addWord}>Add</Button>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex gap-2 flex-1">
+                <Input
+                    value={newWord}
+                    onChange={(e) => setNewWord(e.target.value)}
+                    placeholder="Enter new word"
+                />
+                <Button onClick={addWord}>Add</Button>
+                </div>
+                <Input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search..."
+                className="sm:w-64"
+                />
             </div>
-            <Input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search..."
-            className="sm:w-64"
-            />
-        </div>
 
-        <ul className="space-y-2">
-            {filteredWords.map((word) => (
-            <li key={word} className="flex justify-between items-center border rounded px-3 py-2">
-                <span>{word}</span>
-                <Button variant="destructive" size="sm" onClick={() => confirmDelete(word)}>
-                Delete
-                </Button>
-            </li>
-            ))}
-            {filteredWords.length === 0 && <p className="text-sm text-muted-foreground">No results found.</p>}
-        </ul>
+            {/* 🔍 금지어 리스트 */}
+            <ForbiddenWordList words={filteredWords} onDelete={confirmDelete} />
 
-        {/* 삭제 확인 모달 */}
-        <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-            <AlertDialogContent>
-            <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure you want to delete "{selectedWord}"?</AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={deleteWord}>Delete</AlertDialogAction>
-            </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+            {/* 삭제 확인 모달 */}
+            <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure you want to delete "{selectedWord}"?</AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={deleteWord}>Delete</AlertDialogAction>
+                </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
