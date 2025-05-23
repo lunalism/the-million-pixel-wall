@@ -13,7 +13,7 @@ const navItems = [
 
 export function TopNav() {
     return (
-        <nav className="w-full bg-white px-6 py-3">
+        <nav className="w-full bg-white px-6 py-3 pt-4">
             <div className="mx-auto flex max-w-5xl items-center justify-end">
                 <ul className="flex items-center gap-6 text-sm font-medium text-gray-600">
                     {navItems.map((item) => (
