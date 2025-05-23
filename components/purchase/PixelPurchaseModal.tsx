@@ -17,9 +17,10 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
-// 타입 정의
+// 이미지 입력 방식 타입
 type ImageSource = "file" | "url";
 
+// 컴포넌트 prop 타입 정의
 interface PixelPurchaseModalProps {
   open: boolean;
   onClose: () => void;
@@ -36,8 +37,9 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(10);
+  const [height, setHeight] = useState(1);
 
+  // 모달 열릴 때 폼 초기화
   useEffect(() => {
     if (open) {
       setName("");
@@ -48,10 +50,11 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
       setPreviewUrl(null);
       setSubmitted(false);
       setWidth(1);
-      setHeight(10);
+      setHeight(1);
     }
   }, [open]);
 
+  // 미리보기 설정
   useEffect(() => {
     if (imageSource === "file" && file) {
       const url = URL.createObjectURL(file);
@@ -67,13 +70,15 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
   if (!selectedPixel) return null;
 
   const totalPixels = width * height;
+
+  // 유효성 검사 조건 (1픽셀 이상부터 가능)
   const isFormValid =
     name.trim() &&
     message.trim() &&
-    totalPixels >= 10 &&
+    totalPixels >= 1 &&
     (imageSource === "file" ? file : imageUrl.trim());
 
-  // ✅ 이미지 업로드 함수
+  // 이미지 업로드 함수
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     const filePath = `${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage
@@ -88,7 +93,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
     return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pixel-images/${filePath}`;
   };
 
-  // ✅ 저장 처리 함수
+  // 구매 정보 저장 함수
   const handleSubmit = async () => {
     setSubmitted(true);
     if (!isFormValid || !selectedPixel) return;
@@ -100,24 +105,20 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
       finalImageUrl = uploaded;
     }
 
-    // ✅ width * height 만큼 픽셀 좌표 생성
-    const pixelsToInsert = [];
-    for (let dx = 0; dx < width; dx++) {
-      for (let dy = 0; dy < height; dy++) {
-        pixelsToInsert.push({
-          x: selectedPixel.x + dx,
-          y: selectedPixel.y + dy,
-          name,
-          message,
-          image_url: finalImageUrl
-        });
+    // 첫 좌표에만 이미지 포함한 대표 픽셀 저장
+    const pixelsToInsert = [
+      {
+        x: selectedPixel.x,
+        y: selectedPixel.y,
+        name,
+        message,
+        image_url: finalImageUrl,
+        width,
+        height,
       }
-    }
+    ];
 
-    const { data, error } = await supabase
-      .from("pixels")
-      .insert(pixelsToInsert)
-      .select();
+    const { data, error } = await supabase.from("pixels").insert(pixelsToInsert).select();
 
     if (error) {
       console.error("Save error:", error);
@@ -144,17 +145,13 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
           <div>
             <Label className="pb-2" htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-            {submitted && !name.trim() && (
-              <p className="text-sm text-red-500 mt-1">Name is required.</p>
-            )}
+            {submitted && !name.trim() && <p className="text-sm text-red-500 mt-1">Name is required.</p>}
           </div>
 
           <div>
             <Label className="pb-2" htmlFor="message">Message</Label>
             <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
-            {submitted && !message.trim() && (
-              <p className="text-sm text-red-500 mt-1">Message is required.</p>
-            )}
+            {submitted && !message.trim() && <p className="text-sm text-red-500 mt-1">Message is required.</p>}
           </div>
 
           <div>
@@ -169,18 +166,15 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
             <div>
               <Label className="pb-2" htmlFor="file">Upload Image</Label>
               <Input id="file" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-              {submitted && !file && (
-                <p className="text-sm text-red-500 mt-1">Please upload a file.</p>
-              )}
+              {submitted && !file && <p className="text-sm text-red-500 mt-1">Please upload a file.</p>}
             </div>
           )}
+
           {imageSource === "url" && (
             <div>
               <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
               <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-              {submitted && !imageUrl.trim() && (
-                <p className="text-sm text-red-500 mt-1">Image URL is required.</p>
-              )}
+              {submitted && !imageUrl.trim() && <p className="text-sm text-red-500 mt-1">Image URL is required.</p>}
             </div>
           )}
 
@@ -201,6 +195,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
               <Input id="height" type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))} />
             </div>
           </div>
+
           <div className="text-sm text-muted-foreground">
             Total: {width} × {height} = <strong>{totalPixels}</strong> pixels → <strong>${totalPixels}</strong>
           </div>
@@ -212,10 +207,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
         </div>
 
         <DialogClose asChild>
-          <button
-            className="absolute right-4 top-4 text-gray-500 hover:text-gray-900"
-            aria-label="Close"
-          >
+          <button className="absolute right-4 top-4 text-gray-500 hover:text-gray-900" aria-label="Close">
             <X size={16} />
           </button>
         </DialogClose>
