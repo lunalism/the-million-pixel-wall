@@ -30,14 +30,14 @@ export default function ForbiddenWordsPage() {
         }
     };
 
-    const addWord = async (word: string) => {
-        const { error } = await supabase.from("forbidden_words").insert({ word });
+    const addWord = async ({ word, category }: { word: string; category: string }) => {
+        const { error } = await supabase.from("forbidden_words").insert({ word, category });
         
         if (error) {
-            toast.error("Failed to add word.");
+          toast.error("Failed to add word.");
         } else {
-            toast.success("Word added.");
-            fetchWords();
+          toast.success("Word added.");
+          fetchWords();
         }
     };
 
