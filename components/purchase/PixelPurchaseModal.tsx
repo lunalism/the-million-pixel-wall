@@ -1,8 +1,14 @@
 // components/purchase/PixelPurchaseModal.tsx
-
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,13 +17,14 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
+// 타입 정의
 type ImageSource = "file" | "url";
 
 interface PixelPurchaseModalProps {
   open: boolean;
   onClose: () => void;
   selectedPixel: { x: number; y: number } | null;
-  onPurchaseSuccess: (pixel: any) => void;
+  onPurchaseSuccess: (pixels: any[]) => void;
 }
 
 export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuccess }: PixelPurchaseModalProps) {
@@ -28,10 +35,11 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
   const [imageSource, setImageSource] = useState<ImageSource>("file");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [width, setWidth] = useState(1);
+  const [height, setHeight] = useState(10);
 
   useEffect(() => {
     if (open) {
-      // 🧼 모달 열릴 때마다 폼 초기화
       setName("");
       setMessage("");
       setFile(null);
@@ -39,6 +47,8 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
       setImageSource("file");
       setPreviewUrl(null);
       setSubmitted(false);
+      setWidth(1);
+      setHeight(10);
     }
   }, [open]);
 
@@ -56,11 +66,14 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
   if (!selectedPixel) return null;
 
+  const totalPixels = width * height;
   const isFormValid =
     name.trim() &&
     message.trim() &&
+    totalPixels >= 10 &&
     (imageSource === "file" ? file : imageUrl.trim());
 
+  // ✅ 이미지 업로드 함수
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     const filePath = `${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage
@@ -75,6 +88,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
     return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pixel-images/${filePath}`;
   };
 
+  // ✅ 저장 처리 함수
   const handleSubmit = async () => {
     setSubmitted(true);
     if (!isFormValid || !selectedPixel) return;
@@ -86,24 +100,31 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
       finalImageUrl = uploaded;
     }
 
+    // ✅ width * height 만큼 픽셀 좌표 생성
+    const pixelsToInsert = [];
+    for (let dx = 0; dx < width; dx++) {
+      for (let dy = 0; dy < height; dy++) {
+        pixelsToInsert.push({
+          x: selectedPixel.x + dx,
+          y: selectedPixel.y + dy,
+          name,
+          message,
+          image_url: finalImageUrl
+        });
+      }
+    }
+
     const { data, error } = await supabase
       .from("pixels")
-      .insert({
-        x: selectedPixel.x,
-        y: selectedPixel.y,
-        name,
-        message,
-        image_url: finalImageUrl,
-      })
-      .select()
-      .single();
+      .insert(pixelsToInsert)
+      .select();
 
     if (error) {
       console.error("Save error:", error);
-      alert("Failed to save pixel!");
+      alert("Failed to save pixels!");
     } else {
-      onPurchaseSuccess(data); // ✅ 저장 성공 시 PixelGrid에 반영
-      onClose(); // 모달 닫기
+      onPurchaseSuccess(data);
+      onClose();
     }
   };
 
@@ -120,7 +141,6 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {/* 이름 */}
           <div>
             <Label className="pb-2" htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -129,50 +149,26 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
             )}
           </div>
 
-          {/* 메시지 */}
           <div>
             <Label className="pb-2" htmlFor="message">Message</Label>
-            <Textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
+            <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
             {submitted && !message.trim() && (
               <p className="text-sm text-red-500 mt-1">Message is required.</p>
             )}
           </div>
 
-          {/* 이미지 입력 타입 선택 */}
           <div>
             <Label className="pb-2">Image Input Type</Label>
             <div className="flex gap-2 mt-2">
-              <Button
-                type="button"
-                variant={imageSource === "file" ? "default" : "outline"}
-                onClick={() => setImageSource("file")}
-              >
-                Upload File
-              </Button>
-              <Button
-                type="button"
-                variant={imageSource === "url" ? "default" : "outline"}
-                onClick={() => setImageSource("url")}
-              >
-                Use URL
-              </Button>
+              <Button type="button" variant={imageSource === "file" ? "default" : "outline"} onClick={() => setImageSource("file")}>Upload File</Button>
+              <Button type="button" variant={imageSource === "url" ? "default" : "outline"} onClick={() => setImageSource("url")}>Use URL</Button>
             </div>
           </div>
 
-          {/* 파일 업로드 or URL */}
           {imageSource === "file" && (
             <div>
               <Label className="pb-2" htmlFor="file">Upload Image</Label>
-              <Input
-                id="file"
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-              />
+              <Input id="file" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
               {submitted && !file && (
                 <p className="text-sm text-red-500 mt-1">Please upload a file.</p>
               )}
@@ -181,37 +177,38 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
           {imageSource === "url" && (
             <div>
               <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
-              <Input
-                id="imageUrl"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-              />
+              <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
               {submitted && !imageUrl.trim() && (
                 <p className="text-sm text-red-500 mt-1">Image URL is required.</p>
               )}
             </div>
           )}
 
-          {/* 미리보기 */}
           {previewUrl && (
             <div className="mt-2">
               <Label className="pb-2">Preview</Label>
-              <img
-                src={previewUrl}
-                alt="preview"
-                className="w-full max-h-48 object-contain border rounded"
-              />
+              <img src={previewUrl} alt="preview" className="w-full max-h-48 object-contain border rounded" />
             </div>
           )}
+
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <Label htmlFor="width">Width (x)</Label>
+              <Input id="width" type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value))} />
+            </div>
+            <div className="w-1/2">
+              <Label htmlFor="height">Height (y)</Label>
+              <Input id="height" type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))} />
+            </div>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            Total: {width} × {height} = <strong>{totalPixels}</strong> pixels → <strong>${totalPixels}</strong>
+          </div>
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} disabled={!isFormValid}>
-            Purchase
-          </Button>
+          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSubmit} disabled={!isFormValid}>Purchase</Button>
         </div>
 
         <DialogClose asChild>
