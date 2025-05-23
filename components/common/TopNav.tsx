@@ -18,7 +18,7 @@ export function TopNav() {
                 <ul className="flex items-center gap-6 text-sm font-medium text-gray-600">
                     {navItems.map((item) => (
                         <li key={item.name}>
-                            <Link href={item.href} className={cn( "transition hover:text-black", "text-sm font-medium" )}>
+                            <Link href={item.href} className={cn( "transition hover:text-black", "text-s font-medium" )}>
                                 {item.name}
                             </Link>
                         </li>
