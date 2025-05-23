@@ -7,6 +7,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { supabase } from "@/lib/supabaseClient";
 import { PixelPurchaseModal } from "@/components/purchase/PixelPurchaseModal";
 import { PurchasedPixel } from "@/components/homepage/pixel/PurchasedPixel";
+import { PurchasedPixelModal } from "@/components/pixels/PurchasedPixelModal";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const GRID_SIZE = 1000;
@@ -28,6 +29,7 @@ export function PixelGrid() {
   const [selectedPixel, setSelectedPixel] = useState<{ x: number; y: number } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [purchasedPixels, setPurchasedPixels] = useState<PixelData[]>([]);
+  const [selectedPurchasedPixel, setSelectedPurchasedPixel] = useState<PixelData | null>(null);
 
   // ✅ Supabase에서 기존 구매된 픽셀 데이터 로드
   useEffect(() => {
@@ -39,26 +41,29 @@ export function PixelGrid() {
     fetchPurchasedPixels();
 
     const interval = setInterval(fetchPurchasedPixels, 30000); // 30초 polling
-
-    return () => clearInterval(interval); // 언마운트 시 정리
+    return () => clearInterval(interval);
   }, []);
 
-  // ✅ 픽셀 클릭 → 구매 모달 열기
+  // ✅ 픽셀 클릭 핸들러
   const handlePixelClick = (x: number, y: number) => {
-    const isAlreadyPurchased = purchasedPixels.some((p) => p.x === x && p.y === y);
-    if (isAlreadyPurchased) return; // 이미 구매된 픽셀은 클릭 막기
-
-    setSelectedPixel({ x, y });
-    setIsModalOpen(true);
+    const purchased = purchasedPixels.find((p) => p.x === x && p.y === y);
+    if (purchased) {
+      // 이미 구매된 픽셀 → 상세 모달
+      setSelectedPurchasedPixel(purchased);
+    } else {
+      // 미구매 픽셀 → 구매 모달
+      setSelectedPixel({ x, y });
+      setIsModalOpen(true);
+    }
   };
 
-  // ✅ 모달 닫기
+  // ✅ 구매 모달 닫기
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedPixel(null);
   };
 
-  // ✅ 새로운 픽셀 저장 후 → 상태에 즉시 반영
+  // ✅ 구매 후 상태 반영
   const handlePixelPurchase = (newPixel: PixelData) => {
     setPurchasedPixels((prev) => [...prev, newPixel]);
   };
@@ -114,11 +119,11 @@ export function PixelGrid() {
                         message={purchased.message}
                         left={column.start}
                         top={row.start}
+                        onClick={() => setSelectedPurchasedPixel(purchased)}
                       />
                     );
                   }
 
-                  // 🧱 아직 구매되지 않은 픽셀
                   return (
                     <div
                       key={pixelId}
@@ -139,13 +144,22 @@ export function PixelGrid() {
         </div>
       </div>
 
-      {/* 구매 모달 */}
+      {/* 미구매 픽셀 구매 모달 */}
       <PixelPurchaseModal
         open={isModalOpen}
         onClose={handleCloseModal}
         selectedPixel={selectedPixel}
         onPurchaseSuccess={handlePixelPurchase}
       />
+
+      {/* 이미 구매된 픽셀 상세 모달 */}
+      {selectedPurchasedPixel && (
+        <PurchasedPixelModal
+          open={true}
+          onClose={() => setSelectedPurchasedPixel(null)}
+          pixel={selectedPurchasedPixel}
+        />
+      )}
     </>
   );
 }
