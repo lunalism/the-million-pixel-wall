@@ -64,8 +64,8 @@ export function PixelGrid() {
   };
 
   // ✅ 구매 후 상태 반영
-  const handlePixelPurchase = (newPixel: PixelData) => {
-    setPurchasedPixels((prev) => [...prev, newPixel]);
+  const handlePixelPurchase = (newPixels: PixelData[]) => {
+    setPurchasedPixels((prev) => [...prev, ...newPixels]);
   };
 
   // ✅ 가상화 설정
