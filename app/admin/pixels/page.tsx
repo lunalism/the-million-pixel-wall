@@ -4,47 +4,56 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { columns as rawColumns } from "./columns";
+import { rawColumns } from "./columns";
 import { DataTable } from "./data-table";
-import { Pixel } from "./columns";
+import type { Pixel } from "./columns"; // ✅ 타입만 필요하므로 type import
 import { EditPixelModal } from "@/components/admin/EditPixelModal";
+import { DeletePixelModal } from "@/components/admin/DeletePixelModal";
 
 export default function AdminPixelPage() {
   const [pixels, setPixels] = useState<Pixel[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // ✅ 수정 모달 상태 관리
   const [selectedPixel, setSelectedPixel] = useState<Pixel | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  // 📡 픽셀 데이터 가져오기
+  const fetchPixels = async () => {
+    const { data, error } = await supabase.from("pixels").select("*");
+    if (error) {
+      console.error("픽셀 데이터를 불러오는 중 오류 발생:", error);
+    } else if (data) {
+      setPixels(data);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchPixels = async () => {
-      const { data, error } = await supabase.from("pixels").select("*");
-
-      if (error) {
-        console.error("픽셀 데이터를 불러오는 중 오류 발생:", error);
-      } else if (data) {
-        setPixels(data);
-      }
-
-      setLoading(false);
-    };
-
     fetchPixels();
   }, []);
 
-  // ✅ 픽셀 수정 완료 후 데이터 갱신
-  const handleUpdate = (updated: Pixel) => {
-    setPixels((prev) =>
-      prev.map((p) => (p.id === updated.id ? updated : p))
-    );
-    setIsEditOpen(false);
+  // ✏️ 수정 처리 후 데이터 새로고침
+  const handlePixelUpdated = () => {
+    fetchPixels();
   };
 
-  const columns = rawColumns({ onEdit: (pixel: Pixel) => {
-    setSelectedPixel(pixel);
-    setIsEditOpen(true);
-  }});
+  // 🗑️ 삭제 처리 후 데이터 새로고침
+  const handlePixelDeleted = () => {
+    setIsDeleteOpen(false);
+    setSelectedPixel(null);
+    fetchPixels();
+  };
+
+  const columns = rawColumns({
+    onEdit: (pixel: Pixel) => {
+      setSelectedPixel(pixel);
+      setIsEditOpen(true);
+    },
+    onDelete: (pixel: Pixel) => {
+      setSelectedPixel(pixel);
+      setIsDeleteOpen(true);
+    },
+  });
 
   return (
     <div className="p-6 space-y-6">
@@ -56,15 +65,21 @@ export default function AdminPixelPage() {
         <DataTable columns={columns} data={pixels} />
       )}
 
-      {/* ✅ 수정 모달 연결 */}
-      {selectedPixel && (
-        <EditPixelModal
-          open={isEditOpen}
-          onClose={() => setIsEditOpen(false)}
-          pixel={selectedPixel}
-          onSave={handleUpdate}
-        />
-      )}
+      {/* 수정 모달 */}
+      <EditPixelModal
+        open={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        pixel={selectedPixel}
+        onPixelUpdated={handlePixelUpdated}
+      />
+
+      {/* 삭제 모달 */}
+      <DeletePixelModal
+        open={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        pixelId={selectedPixel?.id || ""}
+        onDelete={handlePixelDeleted}
+      />
     </div>
   );
 }
