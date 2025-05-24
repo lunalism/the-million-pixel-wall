@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ReportPixelModal } from "@/components/pixels/ReportPixelModal";
@@ -47,6 +47,9 @@ export function PurchasedPixelModal({ open, onClose, pixel }: PurchasedPixelModa
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Pixel Details</DialogTitle>
+                        <DialogDescription>
+                            View this pixel's information or report it if necessary.
+                        </DialogDescription>
                     </DialogHeader>
 
                     <div className="space-y-4 text-sm">
