@@ -1,4 +1,4 @@
-// app/admin/pixels/columns.ts
+// app/admin/pixels/columns.tsx
 
 "use client"; // ✅ 꼭 필요!
 
@@ -12,14 +12,20 @@ export type Pixel = {
   id: string;
   x: number;
   y: number;
+  width: number;
+  height: number;
   name: string;
   message: string;
   image_url: string;
   created_at: string;
 };
 
-// 테이블 컬럼 정의
-export const columns: ColumnDef<Pixel>[] = [
+// ✅ columns를 함수로 export - onEdit 핸들러를 받아 Edit 버튼에서 호출할 수 있도록 함
+interface ColumnProps {
+  onEdit: (pixel: Pixel) => void;
+}
+
+export const columns = ({ onEdit }: ColumnProps): ColumnDef<Pixel>[] => [
   {
     accessorKey: "x",
     header: "X",
@@ -45,7 +51,13 @@ export const columns: ColumnDef<Pixel>[] = [
     accessorKey: "image_url",
     header: "이미지",
     cell: ({ row }) => (
-      <Image src={row.original.image_url} alt="preview" width={64} height={64} className="w-10 h-10 rounded object-cover border" />
+      <Image
+        src={row.original.image_url}
+        alt="preview"
+        width={64}
+        height={64}
+        className="w-10 h-10 rounded object-cover border"
+      />
     ),
   },
   {
@@ -55,6 +67,18 @@ export const columns: ColumnDef<Pixel>[] = [
       <span className="text-xs text-muted-foreground">
         {format(new Date(row.original.created_at), "yyyy-MM-dd HH:mm")}
       </span>
+    ),
+  },
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => (
+      <button
+        onClick={() => onEdit(row.original)}
+        className="text-sm text-blue-600 hover:underline"
+      >
+        Edit
+      </button>
     ),
   },
 ];
