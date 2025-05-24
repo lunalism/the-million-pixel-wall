@@ -1,14 +1,7 @@
 // components/purchase/PixelPurchaseModal.tsx
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -187,11 +180,11 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
           <div className="flex gap-4">
             <div className="w-1/2">
-              <Label htmlFor="width">Width (x)</Label>
+              <Label className="pb-2" htmlFor="width">Width (x)</Label>
               <Input id="width" type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value))} />
             </div>
             <div className="w-1/2">
-              <Label htmlFor="height">Height (y)</Label>
+              <Label className="pb-2" htmlFor="height">Height (y)</Label>
               <Input id="height" type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))} />
             </div>
           </div>
