@@ -1,7 +1,13 @@
-// components/purchase/PixelPurchaseModal.tsx
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -22,7 +28,12 @@ interface PixelPurchaseModalProps {
   onPurchaseSuccess: (pixels: any[]) => void;
 }
 
-export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuccess }: PixelPurchaseModalProps) {
+export function PixelPurchaseModal({
+  open,
+  onClose,
+  selectedPixel,
+  onPurchaseSuccess,
+}: PixelPurchaseModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -32,7 +43,9 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
   const [submitted, setSubmitted] = useState(false);
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
+  const [overlapError, setOverlapError] = useState<string | null>(null);
 
+  // 모달이 열릴 때 모든 입력 초기화
   useEffect(() => {
     if (open) {
       setName("");
@@ -44,9 +57,11 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
       setSubmitted(false);
       setWidth(1);
       setHeight(1);
+      setOverlapError(null);
     }
   }, [open]);
 
+  // 이미지 미리보기 처리
   useEffect(() => {
     if (imageSource === "file" && file) {
       const url = URL.createObjectURL(file);
@@ -58,6 +73,51 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
       setPreviewUrl(null);
     }
   }, [file, imageUrl, imageSource]);
+
+  // 겹치는 영역 체크
+  useEffect(() => {
+    const checkOverlap = async () => {
+      if (!selectedPixel) return;
+
+      const { data: existingPixels, error: fetchError } = await supabase
+        .from("pixels")
+        .select("x, y, width, height");
+
+      if (fetchError) {
+        console.error("Error checking existing pixels:", fetchError);
+        setOverlapError("Failed to verify pixel availability.");
+        return;
+      }
+
+      const requestedArea: { x: number; y: number }[] = [];
+      for (let dx = 0; dx < width; dx++) {
+        for (let dy = 0; dy < height; dy++) {
+          requestedArea.push({ x: selectedPixel.x + dx, y: selectedPixel.y + dy });
+        }
+      }
+
+      const isOverlapping = existingPixels?.some((p: any) => {
+        for (let dx = 0; dx < p.width; dx++) {
+          for (let dy = 0; dy < p.height; dy++) {
+            const occupiedX = p.x + dx;
+            const occupiedY = p.y + dy;
+            if (requestedArea.some((r) => r.x === occupiedX && r.y === occupiedY)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      });
+
+      if (isOverlapping) {
+        setOverlapError("Some pixels in the selected area are already taken.");
+      } else {
+        setOverlapError(null);
+      }
+    };
+
+    checkOverlap();
+  }, [selectedPixel, width, height]);
 
   if (!selectedPixel) return null;
 
@@ -85,7 +145,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
   const handleSubmit = async () => {
     setSubmitted(true);
-    if (!isFormValid || !selectedPixel) return;
+    if (!isFormValid || !selectedPixel || overlapError) return;
 
     let finalImageUrl = imageUrl;
     if (imageSource === "file" && file) {
@@ -131,74 +191,130 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
         <div className="grid gap-4 py-4">
           <div>
-            <Label className="pb-2" htmlFor="name">Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-            {submitted && !name.trim() && <p className="text-sm text-red-500 mt-1">Name is required.</p>}
+            {submitted && !name.trim() && (
+              <p className="text-sm text-red-500 mt-1">Name is required.</p>
+            )}
           </div>
 
           <div>
-            <Label className="pb-2" htmlFor="message">Message</Label>
+            <Label htmlFor="message">Message</Label>
             <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
-            {submitted && !message.trim() && <p className="text-sm text-red-500 mt-1">Message is required.</p>}
+            {submitted && !message.trim() && (
+              <p className="text-sm text-red-500 mt-1">Message is required.</p>
+            )}
           </div>
 
           <div>
             <Label>Image Input Type</Label>
             <div className="flex gap-2 mt-2">
-              <Button type="button" variant={imageSource === "file" ? "default" : "outline"} onClick={() => setImageSource("file")}>Upload File</Button>
-              <Button type="button" variant={imageSource === "url" ? "default" : "outline"} onClick={() => setImageSource("url")}>Use URL</Button>
+              <Button
+                type="button"
+                variant={imageSource === "file" ? "default" : "outline"}
+                onClick={() => setImageSource("file")}
+              >
+                Upload File
+              </Button>
+              <Button
+                type="button"
+                variant={imageSource === "url" ? "default" : "outline"}
+                onClick={() => setImageSource("url")}
+              >
+                Use URL
+              </Button>
             </div>
           </div>
 
           {imageSource === "file" && (
             <div>
-              <Label className="pb-2" htmlFor="file">Upload Image</Label>
-              <Input id="file" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-              {submitted && !file && <p className="text-sm text-red-500 mt-1">Please upload a file.</p>}
+              <Label htmlFor="file">Upload Image</Label>
+              <Input
+                id="file"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
+              {submitted && !file && (
+                <p className="text-sm text-red-500 mt-1">Please upload a file.</p>
+              )}
             </div>
           )}
 
           {imageSource === "url" && (
             <div>
-              <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
-              <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
-              {submitted && !imageUrl.trim() && <p className="text-sm text-red-500 mt-1">Image URL is required.</p>}
+              <Label htmlFor="imageUrl">Image URL</Label>
+              <Input
+                id="imageUrl"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+              />
+              {submitted && !imageUrl.trim() && (
+                <p className="text-sm text-red-500 mt-1">Image URL is required.</p>
+              )}
             </div>
           )}
 
           {previewUrl && (
             <div className="mt-2">
               <Label>Preview</Label>
-              <img src={previewUrl} alt="preview" className="w-full max-h-48 object-contain border rounded" />
+              <img
+                src={previewUrl}
+                alt="preview"
+                className="w-full max-h-48 object-contain border rounded"
+              />
             </div>
           )}
 
           <div className="flex gap-4">
             <div className="w-1/2">
-              <Label className="pb-2" htmlFor="width">Width (x)</Label>
-              <Input id="width" type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value))} />
+              <Label htmlFor="width">Width (x)</Label>
+              <Input
+                id="width"
+                type="number"
+                min={1}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
             </div>
             <div className="w-1/2">
-              <Label className="pb-2" htmlFor="height">Height (y)</Label>
-              <Input id="height" type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))} />
+              <Label htmlFor="height">Height (y)</Label>
+              <Input
+                id="height"
+                type="number"
+                min={1}
+                value={height}
+                onChange={(e) => setHeight(Number(e.target.value))}
+              />
             </div>
           </div>
 
+          {/* 중복 영역 경고 메시지 */}
+          {overlapError && (
+            <p className="text-sm text-red-500 -mt-2">{overlapError}</p>
+          )}
+
           <div className="text-sm text-muted-foreground">
-            Total: {width} × {height} = <strong>{totalPixels}</strong> pixels → <strong>${totalPixels}</strong>
+            Total: {width} × {height} = <strong>{totalPixels}</strong> pixels →{" "}
+            <strong>${totalPixels}</strong>
           </div>
         </div>
 
+        {/* 결제 버튼 */}
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
           <div className="w-full">
             <PayPalButtons
-              style={{ layout: "horizontal", height: 36, borderRadius: 6 }}
-              forceReRender={[totalPixels]}
+              style={{ layout: "horizontal", height: 38 }}
+              forceReRender={[totalPixels, overlapError]}
+              disabled={!!overlapError} // ⚠️ 겹치는 픽셀이 있으면 버튼 비활성화
               createOrder={(data, actions) => {
-                if (!actions.order) throw new Error("PayPal order actions not available");
+                if (!actions.order)
+                  throw new Error("PayPal order actions not available");
                 return actions.order.create({
-                  intent: "CAPTURE", // ✅ 이 줄 추가
+                  intent: "CAPTURE",
                   purchase_units: [
                     {
                       amount: {
@@ -209,7 +325,6 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
                   ],
                 });
               }}
-              
               onApprove={async (data, actions) => {
                 if (!actions?.order) return;
                 const details = await actions.order.capture();
@@ -225,7 +340,10 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
         </div>
 
         <DialogClose asChild>
-          <button className="absolute right-4 top-4 text-gray-500 hover:text-gray-900" aria-label="Close">
+          <button
+            className="absolute right-4 top-4 text-gray-500 hover:text-gray-900"
+            aria-label="Close"
+          >
             <X size={16} />
           </button>
         </DialogClose>
