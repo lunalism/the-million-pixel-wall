@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 // 이미지 입력 방식 타입
 type ImageSource = "file" | "url";
@@ -32,7 +33,6 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
 
-  // 모달 열릴 때 폼 초기화
   useEffect(() => {
     if (open) {
       setName("");
@@ -47,7 +47,6 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
     }
   }, [open]);
 
-  // 미리보기 설정
   useEffect(() => {
     if (imageSource === "file" && file) {
       const url = URL.createObjectURL(file);
@@ -64,14 +63,12 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
   const totalPixels = width * height;
 
-  // 유효성 검사 조건 (1픽셀 이상부터 가능)
   const isFormValid =
     name.trim() &&
     message.trim() &&
     totalPixels >= 1 &&
     (imageSource === "file" ? file : imageUrl.trim());
 
-  // 이미지 업로드 함수
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     const filePath = `${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage
@@ -86,7 +83,6 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
     return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pixel-images/${filePath}`;
   };
 
-  // 구매 정보 저장 함수
   const handleSubmit = async () => {
     setSubmitted(true);
     if (!isFormValid || !selectedPixel) return;
@@ -98,7 +94,6 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
       finalImageUrl = uploaded;
     }
 
-    // 첫 좌표에만 이미지 포함한 대표 픽셀 저장
     const pixelsToInsert = [
       {
         x: selectedPixel.x,
@@ -108,7 +103,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
         image_url: finalImageUrl,
         width,
         height,
-      }
+      },
     ];
 
     const { data, error } = await supabase.from("pixels").insert(pixelsToInsert).select();
@@ -136,19 +131,19 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
         <div className="grid gap-4 py-4">
           <div>
-            <Label className="pb-2" htmlFor="name">Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             {submitted && !name.trim() && <p className="text-sm text-red-500 mt-1">Name is required.</p>}
           </div>
 
           <div>
-            <Label className="pb-2" htmlFor="message">Message</Label>
+            <Label htmlFor="message">Message</Label>
             <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
             {submitted && !message.trim() && <p className="text-sm text-red-500 mt-1">Message is required.</p>}
           </div>
 
           <div>
-            <Label className="pb-2">Image Input Type</Label>
+            <Label>Image Input Type</Label>
             <div className="flex gap-2 mt-2">
               <Button type="button" variant={imageSource === "file" ? "default" : "outline"} onClick={() => setImageSource("file")}>Upload File</Button>
               <Button type="button" variant={imageSource === "url" ? "default" : "outline"} onClick={() => setImageSource("url")}>Use URL</Button>
@@ -157,7 +152,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
           {imageSource === "file" && (
             <div>
-              <Label className="pb-2" htmlFor="file">Upload Image</Label>
+              <Label htmlFor="file">Upload Image</Label>
               <Input id="file" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
               {submitted && !file && <p className="text-sm text-red-500 mt-1">Please upload a file.</p>}
             </div>
@@ -165,7 +160,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
           {imageSource === "url" && (
             <div>
-              <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
+              <Label htmlFor="imageUrl">Image URL</Label>
               <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
               {submitted && !imageUrl.trim() && <p className="text-sm text-red-500 mt-1">Image URL is required.</p>}
             </div>
@@ -173,18 +168,18 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
           {previewUrl && (
             <div className="mt-2">
-              <Label className="pb-2">Preview</Label>
+              <Label>Preview</Label>
               <img src={previewUrl} alt="preview" className="w-full max-h-48 object-contain border rounded" />
             </div>
           )}
 
           <div className="flex gap-4">
             <div className="w-1/2">
-              <Label className="pb-2" htmlFor="width">Width (x)</Label>
+              <Label htmlFor="width">Width (x)</Label>
               <Input id="width" type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value))} />
             </div>
             <div className="w-1/2">
-              <Label className="pb-2" htmlFor="height">Height (y)</Label>
+              <Label htmlFor="height">Height (y)</Label>
               <Input id="height" type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))} />
             </div>
           </div>
@@ -196,7 +191,37 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={!isFormValid}>Purchase</Button>
+          <div className="w-full">
+            <PayPalButtons
+              style={{ layout: "horizontal" }}
+              forceReRender={[totalPixels]}
+              createOrder={(data, actions) => {
+                if (!actions.order) throw new Error("PayPal order actions not available");
+                return actions.order.create({
+                  intent: "CAPTURE", // ✅ 이 줄 추가
+                  purchase_units: [
+                    {
+                      amount: {
+                        currency_code: "USD",
+                        value: totalPixels.toString(),
+                      },
+                    },
+                  ],
+                });
+              }}
+              
+              onApprove={async (data, actions) => {
+                if (!actions?.order) return;
+                const details = await actions.order.capture();
+                console.log("✅ Payment success:", details);
+                await handleSubmit();
+              }}
+              onError={(err) => {
+                console.error("❌ Payment error:", err);
+                alert("Payment failed. Please try again.");
+              }}
+            />
+          </div>
         </div>
 
         <DialogClose asChild>
