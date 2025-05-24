@@ -24,7 +24,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   // ✅ 로그아웃 함수
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.replace("/admin/login");
+    router.replace("/");
   };
 
   useEffect(() => {
