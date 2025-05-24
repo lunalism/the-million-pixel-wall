@@ -1,5 +1,3 @@
-// app/admin/layout.tsx
-
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
@@ -8,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button"; // ✅ 버튼 import
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -22,9 +21,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [authorized, setAuthorized] = useState<boolean | null>(null);
 
+  // ✅ 로그아웃 함수
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.replace("/admin/login");
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
-      // 로그인 페이지는 인증 예외 처리
       if (pathname === "/admin/login") {
         setAuthorized(true);
         return;
@@ -69,23 +73,26 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="container flex h-14 items-center justify-between px-4 pl-6 pr-6">
           <div className="font-bold text-lg">🧱 Admin</div>
 
-          {/* 내비게이션 탭 */}
-          <nav className="flex gap-6 text-sm">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "transition-colors hover:text-primary",
-                  pathname === item.href
-                    ? "text-primary font-semibold"
-                    : "text-muted-foreground"
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+          <div className="flex items-center gap-6">
+            {/* 내비게이션 탭 */}
+            <nav className="flex gap-6 text-sm">
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href} className={cn( "transition-colors hover:text-primary",
+                    pathname === item.href
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+
+            {/* 로그아웃 버튼 */}
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 
