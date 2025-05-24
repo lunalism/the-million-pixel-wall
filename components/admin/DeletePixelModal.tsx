@@ -50,11 +50,7 @@ export function DeletePixelModal({ open, onClose, pixelId, onDelete }: DeletePix
                     <Button variant="outline" onClick={onClose} disabled={loading}>
                         Cancel
                     </Button>
-                    <Button
-                        variant="destructive"
-                        onClick={handleDelete}
-                        disabled={loading}
-                    >
+                    <Button variant="destructive" onClick={handleDelete} disabled={loading}>
                         Delete
                     </Button>
                 </DialogFooter>
