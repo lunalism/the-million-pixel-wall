@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,6 +9,7 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import { toast } from "sonner";
 
 // 이미지 입력 방식 타입
 type ImageSource = "file" | "url";
@@ -28,12 +22,7 @@ interface PixelPurchaseModalProps {
   onPurchaseSuccess: (pixels: any[]) => void;
 }
 
-export function PixelPurchaseModal({
-  open,
-  onClose,
-  selectedPixel,
-  onPurchaseSuccess,
-}: PixelPurchaseModalProps) {
+export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuccess }: PixelPurchaseModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -172,6 +161,9 @@ export function PixelPurchaseModal({
       console.error("Save error:", error);
       alert("Failed to save pixels!");
     } else {
+      // ✅ 성공 토스트 메시지
+      toast.success("🎉 Your pixels have been successfully purchased!");
+
       onPurchaseSuccess(data);
       onClose();
     }
@@ -209,18 +201,10 @@ export function PixelPurchaseModal({
           <div>
             <Label>Image Input Type</Label>
             <div className="flex gap-2 mt-2">
-              <Button
-                type="button"
-                variant={imageSource === "file" ? "default" : "outline"}
-                onClick={() => setImageSource("file")}
-              >
+              <Button type="button" variant={imageSource === "file" ? "default" : "outline"} onClick={() => setImageSource("file")}>
                 Upload File
               </Button>
-              <Button
-                type="button"
-                variant={imageSource === "url" ? "default" : "outline"}
-                onClick={() => setImageSource("url")}
-              >
+              <Button type="button" variant={imageSource === "url" ? "default" : "outline"} onClick={() => setImageSource("url")}>
                 Use URL
               </Button>
             </div>
@@ -229,12 +213,7 @@ export function PixelPurchaseModal({
           {imageSource === "file" && (
             <div>
               <Label htmlFor="file">Upload Image</Label>
-              <Input
-                id="file"
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-              />
+              <Input id="file" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)}/>
               {submitted && !file && (
                 <p className="text-sm text-red-500 mt-1">Please upload a file.</p>
               )}
@@ -244,11 +223,7 @@ export function PixelPurchaseModal({
           {imageSource === "url" && (
             <div>
               <Label htmlFor="imageUrl">Image URL</Label>
-              <Input
-                id="imageUrl"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-              />
+              <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}/>
               {submitted && !imageUrl.trim() && (
                 <p className="text-sm text-red-500 mt-1">Image URL is required.</p>
               )}
@@ -258,34 +233,18 @@ export function PixelPurchaseModal({
           {previewUrl && (
             <div className="mt-2">
               <Label>Preview</Label>
-              <img
-                src={previewUrl}
-                alt="preview"
-                className="w-full max-h-48 object-contain border rounded"
-              />
+              <img src={previewUrl} alt="preview" className="w-full max-h-48 object-contain border rounded"/>
             </div>
           )}
 
           <div className="flex gap-4">
             <div className="w-1/2">
               <Label htmlFor="width">Width (x)</Label>
-              <Input
-                id="width"
-                type="number"
-                min={1}
-                value={width}
-                onChange={(e) => setWidth(Number(e.target.value))}
-              />
+              <Input id="width" type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value))}/>
             </div>
             <div className="w-1/2">
               <Label htmlFor="height">Height (y)</Label>
-              <Input
-                id="height"
-                type="number"
-                min={1}
-                value={height}
-                onChange={(e) => setHeight(Number(e.target.value))}
-              />
+              <Input id="height" type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))}/>
             </div>
           </div>
 
@@ -340,10 +299,7 @@ export function PixelPurchaseModal({
         </div>
 
         <DialogClose asChild>
-          <button
-            className="absolute right-4 top-4 text-gray-500 hover:text-gray-900"
-            aria-label="Close"
-          >
+          <button className="absolute right-4 top-4 text-gray-500 hover:text-gray-900" aria-label="Close">
             <X size={16} />
           </button>
         </DialogClose>
