@@ -100,7 +100,7 @@ export function PixelGrid() {
       <div className="w-full flex justify-center overflow-auto py-10">
         <div
           ref={parentRef}
-          className="relative h-[600px] w-[1000px] overflow-auto border rounded shadow-md"
+          className="relative h-[800px] w-[1200px] overflow-auto border rounded shadow-md"
         >
           <div
             style={{
