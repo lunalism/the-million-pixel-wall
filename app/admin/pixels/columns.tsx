@@ -1,31 +1,33 @@
-// app/admin/pixels/columns.tsx
+// app/admin/pixels/columns.ts
 
-"use client"; // ✅ 꼭 필요!
+"use client";
 
 import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Pencil, Trash2 } from "lucide-react";
 
-// Pixel 타입
+// ✅ Pixel 타입 export
 export type Pixel = {
   id: string;
   x: number;
   y: number;
-  width: number;
-  height: number;
   name: string;
   message: string;
   image_url: string;
   created_at: string;
 };
 
-// ✅ columns를 함수로 export - onEdit 핸들러를 받아 Edit 버튼에서 호출할 수 있도록 함
-interface ColumnProps {
+// ⚙️ Action 핸들러 타입 정의
+interface ColumnHandlers {
   onEdit: (pixel: Pixel) => void;
+  onDelete: (pixel: Pixel) => void;
 }
 
-export const columns = ({ onEdit }: ColumnProps): ColumnDef<Pixel>[] => [
+// 📦 컬럼 정의 함수로 export
+export const rawColumns = ({ onEdit, onDelete }: ColumnHandlers): ColumnDef<Pixel>[] => [
   {
     accessorKey: "x",
     header: "X",
@@ -71,14 +73,16 @@ export const columns = ({ onEdit }: ColumnProps): ColumnDef<Pixel>[] => [
   },
   {
     id: "actions",
-    header: "",
+    header: "Actions",
     cell: ({ row }) => (
-      <button
-        onClick={() => onEdit(row.original)}
-        className="text-sm text-blue-600 hover:underline"
-      >
-        Edit
-      </button>
+      <div className="flex gap-2">
+        <Button size="sm" variant="outline" onClick={() => onEdit(row.original)}>
+          <Pencil className="w-4 h-4" />
+        </Button>
+        <Button size="sm" variant="destructive" onClick={() => onDelete(row.original)}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
     ),
   },
 ];
