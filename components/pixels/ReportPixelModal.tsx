@@ -14,7 +14,7 @@ export type ReportPixelModalProps = {
   open: boolean;
   onClose: () => void;
   pixelId: string;
-  onSubmit: (data: { reason: string; message: string }) => void;
+  onSubmit: (data: { reason: string; message: string; pixelId: string; }) => void;
 };
 
 export function ReportPixelModal({ open, pixelId, onClose, onSubmit }: ReportPixelModalProps) {
@@ -50,7 +50,7 @@ export function ReportPixelModal({ open, pixelId, onClose, onSubmit }: ReportPix
       return;
     }
 
-    onSubmit({ reason, message });
+    onSubmit({ reason, pixelId, message });
     onClose();
     setReason("");
     setMessage("");
