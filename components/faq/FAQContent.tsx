@@ -33,9 +33,9 @@ export function FAQContent() {
             <div className="grid md:grid-cols-[400px_1fr] gap-8 items-start">
                 {/* 📬 연락처 섹션 */}
                 <div className="bg-muted/50 p-6 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold mb-2">Can&apos;tt find your answer?</h3>
+                    <h3 className="text-lg font-semibold mb-2">Can&apos;t find your answer?</h3>
                     <p className="text-muted-foreground mb-4">
-                        Feel free to reach out to us directly if your question isn&apos;tt listed here.
+                        Feel free to reach out to us directly if your question isn&apos;t listed here.
                     </p>
                     <div className="flex items-center gap-2 text-sm text-primary font-medium">
                         <MailIcon className="w-4 h-4" />
