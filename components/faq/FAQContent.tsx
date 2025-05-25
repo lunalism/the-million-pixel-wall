@@ -1,47 +1,60 @@
+// components/faq/FAQContent.tsx
 "use client";
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+type FAQ = {
+  id: number;
+  question: string;
+  answer: string;
+};
 
 export function FAQContent() {
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // 🔄 Supabase에서 FAQ 데이터를 불러오는 함수
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      const { data, error } = await supabase
+        .from("faq")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) {
+        console.error("Failed to fetch FAQs:", error);
+      } else {
+        setFaqs(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchFaqs();
+  }, []);
+
   return (
-    <section className="max-w-screen-md mx-auto px-4 md:px-8 py-16">
-      <h2 className="text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
-      <Accordion type="single" collapsible className="space-y-4">
-        <AccordionItem value="item-1">
-          <AccordionTrigger>What is the Million Pixel Wall?</AccordionTrigger>
-          <AccordionContent>
-            The Million Pixel Wall is a digital canvas where you can buy and own pixels. You upload an image, add a message, and your pixel becomes part of internet history.
-          </AccordionContent>
-        </AccordionItem>
+    <section className="max-w-screen-md mx-auto px-4 md:px-8 py-12">
+      <h2 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
 
-        <AccordionItem value="item-2">
-          <AccordionTrigger>How much does it cost to buy pixels?</AccordionTrigger>
-          <AccordionContent>
-            Each pixel costs $1. The minimum purchase is 10 pixels, and you can purchase them in a grid of your chosen size.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="item-3">
-          <AccordionTrigger>What kind of content is allowed?</AccordionTrigger>
-          <AccordionContent>
-            No offensive, hateful, or inappropriate content is allowed. All pixels are moderated, and users can report problematic pixels for review.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="item-4">
-          <AccordionTrigger>Can I edit or delete my pixel later?</AccordionTrigger>
-          <AccordionContent>
-            No. Once your pixel is purchased, it becomes a permanent part of the wall. Please double-check your content before confirming the purchase.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="item-5">
-          <AccordionTrigger>How can I contact the admin?</AccordionTrigger>
-          <AccordionContent>
-            You can reach us via the contact link in the footer or through our official social media accounts.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      {loading ? (
+        <p className="text-center text-muted-foreground">Loading FAQs...</p>
+      ) : (
+        <Accordion type="single" collapsible className="w-full">
+          {faqs.map((faq) => (
+            <AccordionItem key={faq.id} value={`faq-${faq.id}`}>
+              <AccordionTrigger className="text-left text-base font-medium">{faq.question}</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">{faq.answer}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
     </section>
   );
 }
