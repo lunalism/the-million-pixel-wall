@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
-type AboutSection = {
+type About = {
   id: string;
   slug: string;
   title: string;
@@ -15,13 +15,13 @@ type AboutSection = {
 };
 
 export function AboutContent() {
-    const [sections, setSections] = useState<AboutSection[]>([]);
+    const [sections, setSections] = useState<About[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchSections = async () => {
         const { data, error } = await supabase
-            .from("about_sections")
+            .from("about")
             .select("*")
             .order("order_index", { ascending: true });
 
