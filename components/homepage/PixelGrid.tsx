@@ -9,7 +9,7 @@ import { PurchasedPixelModal } from "@/components/pixels/PurchasedPixelModal";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const GRID_SIZE = 1000;
-const PIXEL_SIZE = 15;
+const PIXEL_SIZE = 10;
 
 interface PixelData {
   id: string;
@@ -117,7 +117,7 @@ export function PixelGrid() {
                   <div
                     key={`${x}-${y}`}
                     title={`${pixel.name}: ${pixel.message}`}
-                    className="absolute border border-gray-200 cursor-pointer"
+                    className="absolute bg-white hover:bg-gray-200 outline outline-[0.2px] outline-gray-100"
                     style={{
                       width: width * PIXEL_SIZE,
                       height: height * PIXEL_SIZE,

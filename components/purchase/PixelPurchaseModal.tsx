@@ -235,14 +235,14 @@ export function PixelPurchaseModal({
         <div className="grid gap-4 py-4">
           {/* 이름 */}
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label className="pb-2" htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             {submitted && !name.trim() && <p className="text-sm text-red-500 mt-1">Name is required.</p>}
           </div>
 
           {/* 메시지 */}
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label className="pb-2" htmlFor="message">Message</Label>
             <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
             {submitted && !message.trim() && <p className="text-sm text-red-500 mt-1">Message is required.</p>}
           </div>
@@ -259,7 +259,7 @@ export function PixelPurchaseModal({
           {/* 이미지 업로드 */}
           {imageSource === "file" && (
             <div>
-              <Label htmlFor="file">Upload Image</Label>
+              <Label className="pb-2" htmlFor="file">Upload Image</Label>
               <Input id="file" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
               {submitted && !file && <p className="text-sm text-red-500 mt-1">Please upload a file.</p>}
             </div>
@@ -268,7 +268,7 @@ export function PixelPurchaseModal({
           {/* 이미지 URL 입력 */}
           {imageSource === "url" && (
             <div>
-              <Label htmlFor="imageUrl">Image URL</Label>
+              <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
               <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
               {submitted && !imageUrl.trim() && <p className="text-sm text-red-500 mt-1">Image URL is required.</p>}
             </div>
@@ -277,7 +277,7 @@ export function PixelPurchaseModal({
           {/* 미리보기 */}
           {previewUrl && (
             <div className="mt-2">
-              <Label>Preview</Label>
+              <Label className="pb-2" >Preview</Label>
               <img src={previewUrl} alt="preview" className="w-full max-h-48 object-contain border rounded" />
             </div>
           )}
@@ -285,11 +285,11 @@ export function PixelPurchaseModal({
           {/* 크기 입력 */}
           <div className="flex gap-4">
             <div className="w-1/2">
-              <Label htmlFor="width">Width (x)</Label>
+              <Label className="pb-2" htmlFor="width">Width (x)</Label>
               <Input id="width" type="number" min={1} value={width} onChange={(e) => setWidth(Number(e.target.value))} />
             </div>
             <div className="w-1/2">
-              <Label htmlFor="height">Height (y)</Label>
+              <Label className="pb-2" htmlFor="height">Height (y)</Label>
               <Input id="height" type="number" min={1} value={height} onChange={(e) => setHeight(Number(e.target.value))} />
             </div>
           </div>
@@ -309,7 +309,7 @@ export function PixelPurchaseModal({
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <div className="w-full">
             <PayPalButtons
-              style={{ layout: "horizontal", height: 38 }}
+              style={{ layout: "horizontal", height: 36 }}
               forceReRender={[totalPixels, overlapError]}
               disabled={!!overlapError}
               createOrder={(data, actions) => {
