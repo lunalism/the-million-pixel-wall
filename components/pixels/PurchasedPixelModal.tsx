@@ -26,7 +26,7 @@ export function PurchasedPixelModal({ open, onClose, pixel }: PurchasedPixelModa
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
     // ✅ 신고 제출 처리 (Supabase 저장)
-    const handleReportSubmit = async (data: { reason: string; message: string }) => {
+    const handleReportSubmit = async (data: { reason: string; message: string; pixelId: string }) => {
         const { error } = await supabase.from("reports").insert({
             pixel_id: pixel.id,
             reason: data.reason,

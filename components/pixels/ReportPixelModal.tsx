@@ -14,10 +14,10 @@ export type ReportPixelModalProps = {
   open: boolean;
   onClose: () => void;
   pixelId: string;
-  onSubmit: (data: { reason: string; message: string }) => void;
+  onSubmit: (data: { reason: string; message: string; pixelId: string; }) => void;
 };
 
-export function ReportPixelModal({ open, onClose, pixelId, onSubmit }: ReportPixelModalProps) {
+export function ReportPixelModal({ open, pixelId, onClose, onSubmit }: ReportPixelModalProps) {
   const [reason, setReason] = useState("");
   const [message, setMessage] = useState("");
   const [forbiddenWords, setForbiddenWords] = useState<string[]>([]);
@@ -50,7 +50,7 @@ export function ReportPixelModal({ open, onClose, pixelId, onSubmit }: ReportPix
       return;
     }
 
-    onSubmit({ reason, message });
+    onSubmit({ reason, pixelId, message });
     onClose();
     setReason("");
     setMessage("");

@@ -1,13 +1,7 @@
+// components/purchase/PixelPurchaseModal.tsx
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,24 +11,44 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "sonner";
+import Image from "next/image";
 
 // 이미지 입력 방식 타입
 type ImageSource = "file" | "url";
 
-// 컴포넌트 prop 타입 정의
+// 픽셀 데이터 타입 정의
+type PixelData = {
+  id: string;
+  x: number;
+  y: number;
+  name: string;
+  message: string;
+  image_url: string;
+  thumbnail_url?: string;
+  original_width?: number;
+  original_height?: number;
+  width?: number;
+  height?: number;
+  created_at: string;
+};
+
+// Supabase 픽셀 조회용 타입
+type PixelRecord = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+// 컴포넌트 props 정의
 interface PixelPurchaseModalProps {
   open: boolean;
   onClose: () => void;
   selectedPixel: { x: number; y: number } | null;
-  onPurchaseSuccess: (pixels: any[]) => void;
+  onPurchaseSuccess: (pixels: PixelData[]) => void;
 }
 
-export function PixelPurchaseModal({
-  open,
-  onClose,
-  selectedPixel,
-  onPurchaseSuccess,
-}: PixelPurchaseModalProps) {
+export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuccess }: PixelPurchaseModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -46,7 +60,7 @@ export function PixelPurchaseModal({
   const [height, setHeight] = useState(1);
   const [overlapError, setOverlapError] = useState<string | null>(null);
 
-  // 모달이 열릴 때 초기화
+  // 초기화
   useEffect(() => {
     if (open) {
       setName("");
@@ -62,7 +76,7 @@ export function PixelPurchaseModal({
     }
   }, [open]);
 
-  // 미리보기 설정
+  // 이미지 미리보기 처리
   useEffect(() => {
     if (imageSource === "file" && file) {
       const url = URL.createObjectURL(file);
@@ -75,7 +89,7 @@ export function PixelPurchaseModal({
     }
   }, [file, imageUrl, imageSource]);
 
-  // 중복 체크
+  // 겹치는 영역 체크
   useEffect(() => {
     const checkOverlap = async () => {
       if (!selectedPixel) return;
@@ -97,7 +111,7 @@ export function PixelPurchaseModal({
         }
       }
 
-      const isOverlapping = existingPixels?.some((p: any) => {
+      const isOverlapping = (existingPixels as PixelRecord[])?.some((p) => {
         for (let dx = 0; dx < p.width; dx++) {
           for (let dy = 0; dy < p.height; dy++) {
             if (requestedArea.some(r => r.x === p.x + dx && r.y === p.y + dy)) return true;
@@ -112,29 +126,27 @@ export function PixelPurchaseModal({
     checkOverlap();
   }, [selectedPixel, width, height]);
 
-  if (!selectedPixel) return null;
   const totalPixels = width * height;
-
   const isFormValid =
     name.trim() &&
     message.trim() &&
     totalPixels >= 1 &&
     (imageSource === "file" ? file : imageUrl.trim());
 
-  // ✅ 이미지 크기 추출 함수
+  // 이미지 원본 사이즈 측정
   const getImageDimensions = (src: string): Promise<{ width: number; height: number }> => {
     return new Promise((resolve, reject) => {
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
       img.onerror = reject;
       img.src = src;
     });
   };
 
-  // ✅ 썸네일 생성 함수 (64x64 PNG)
+  // 썸네일 생성
   const resizeImageToThumbnail = async (src: string): Promise<Blob | null> => {
     return new Promise((resolve, reject) => {
-      const img = new Image();
+      const img = new window.Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
         const canvas = document.createElement("canvas");
@@ -142,7 +154,6 @@ export function PixelPurchaseModal({
         canvas.height = 64;
         const ctx = canvas.getContext("2d");
         if (!ctx) return reject(new Error("Canvas context not available"));
-
         ctx.drawImage(img, 0, 0, 64, 64);
         canvas.toBlob((blob) => {
           if (!blob) return reject(new Error("Failed to create thumbnail blob"));
@@ -154,6 +165,7 @@ export function PixelPurchaseModal({
     });
   };
 
+  // Supabase에 이미지 업로드
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
     const filePath = `${Date.now()}_${file.name}`;
     const { error } = await supabase.storage.from("pixel-images").upload(filePath, file);
@@ -164,11 +176,11 @@ export function PixelPurchaseModal({
     return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pixel-images/${filePath}`;
   };
 
+  // 제출 처리
   const handleSubmit = async () => {
     setSubmitted(true);
     if (!isFormValid || !selectedPixel || overlapError) return;
 
-    // ✅ 이미지 업로드
     let finalImageUrl = imageUrl;
     if (imageSource === "file" && file) {
       const uploaded = await uploadImageToSupabase(file);
@@ -176,12 +188,10 @@ export function PixelPurchaseModal({
       finalImageUrl = uploaded;
     }
 
-    // ✅ 원본 이미지 크기 구하기
     const { width: originalWidth, height: originalHeight } = await getImageDimensions(finalImageUrl);
-
-    // ✅ 썸네일 생성 및 업로드
     const thumbBlob = await resizeImageToThumbnail(finalImageUrl);
     const thumbFilePath = `thumb_${Date.now()}.png`;
+
     const { error: thumbError } = await supabase.storage
       .from("pixel-thumbnails")
       .upload(thumbFilePath, thumbBlob!);
@@ -193,10 +203,8 @@ export function PixelPurchaseModal({
 
     const thumbnailUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pixel-thumbnails/${thumbFilePath}`;
 
-    // ✅ Supabase에 데이터 저장
-    const { data, error } = await supabase
-      .from("pixels")
-      .insert([{
+    const { data, error } = await supabase.from("pixels").insert([
+      {
         x: selectedPixel.x,
         y: selectedPixel.y,
         name,
@@ -207,18 +215,20 @@ export function PixelPurchaseModal({
         original_width: originalWidth,
         original_height: originalHeight,
         thumbnail_url: thumbnailUrl,
-      }])
-      .select();
+      },
+    ]).select();
 
     if (error) {
       console.error("픽셀 저장 오류:", error);
       alert("Failed to save pixels!");
     } else {
       toast.success("🎉 Your pixels have been successfully purchased!");
-      onPurchaseSuccess(data);
+      onPurchaseSuccess(data as PixelData[]);
       onClose();
     }
   };
+
+  if (!selectedPixel) return null;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -235,19 +245,19 @@ export function PixelPurchaseModal({
         <div className="grid gap-4 py-4">
           {/* 이름 */}
           <div>
-            <Label className="pb-2" htmlFor="name">Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             {submitted && !name.trim() && <p className="text-sm text-red-500 mt-1">Name is required.</p>}
           </div>
 
           {/* 메시지 */}
           <div>
-            <Label className="pb-2" htmlFor="message">Message</Label>
+            <Label htmlFor="message">Message</Label>
             <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
             {submitted && !message.trim() && <p className="text-sm text-red-500 mt-1">Message is required.</p>}
           </div>
 
-          {/* 이미지 입력 방식 선택 */}
+          {/* 이미지 입력 타입 선택 */}
           <div>
             <Label>Image Input Type</Label>
             <div className="flex gap-2 mt-2">
@@ -265,7 +275,7 @@ export function PixelPurchaseModal({
             </div>
           )}
 
-          {/* 이미지 URL 입력 */}
+          {/* 이미지 URL */}
           {imageSource === "url" && (
             <div>
               <Label className="pb-2" htmlFor="imageUrl">Image URL</Label>
@@ -277,8 +287,8 @@ export function PixelPurchaseModal({
           {/* 미리보기 */}
           {previewUrl && (
             <div className="mt-2">
-              <Label className="pb-2" >Preview</Label>
-              <img src={previewUrl} alt="preview" className="w-full max-h-48 object-contain border rounded" />
+              <Label>Preview</Label>
+              <Image src={previewUrl} alt="preview" width={256} height={192} className="w-full max-h-48 object-contain border rounded"/>
             </div>
           )}
 
@@ -294,10 +304,8 @@ export function PixelPurchaseModal({
             </div>
           </div>
 
-          {/* 중복 메시지 */}
-          {overlapError && (
-            <p className="text-sm text-red-500 -mt-2">{overlapError}</p>
-          )}
+          {/* 중복 경고 */}
+          {overlapError && <p className="text-sm text-red-500 -mt-2">{overlapError}</p>}
 
           <div className="text-sm text-muted-foreground">
             Total: {width} × {height} = <strong>{totalPixels}</strong> pixels → <strong>${totalPixels}</strong>
