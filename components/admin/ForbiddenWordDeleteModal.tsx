@@ -16,7 +16,7 @@ export function ForbiddenWordDeleteModal({ open, word, onConfirm, onCancel }: Fo
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
-                        Are you sure you want to delete "{word}"?
+                        Are you sure you want to delete &quot;{word}&quot;?
                     </AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
