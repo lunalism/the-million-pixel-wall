@@ -13,10 +13,11 @@ import { getForbiddenWords } from "@/lib/api/getForbiddenWords";
 export type ReportPixelModalProps = {
   open: boolean;
   onClose: () => void;
+  pixelId: string;
   onSubmit: (data: { reason: string; message: string }) => void;
 };
 
-export function ReportPixelModal({ open, onClose, onSubmit }: ReportPixelModalProps) {
+export function ReportPixelModal({ open, pixelId, onClose, onSubmit }: ReportPixelModalProps) {
   const [reason, setReason] = useState("");
   const [message, setMessage] = useState("");
   const [forbiddenWords, setForbiddenWords] = useState<string[]>([]);
