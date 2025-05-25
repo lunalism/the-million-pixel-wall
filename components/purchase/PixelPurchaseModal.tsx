@@ -29,7 +29,7 @@ type PixelData = {
   original_height?: number;
   width?: number;
   height?: number;
-  created_at?: string;
+  created_at: string;
 };
 
 // Supabase 픽셀 조회용 타입
