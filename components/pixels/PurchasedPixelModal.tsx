@@ -48,7 +48,7 @@ export function PurchasedPixelModal({ open, onClose, pixel }: PurchasedPixelModa
                     <DialogHeader>
                         <DialogTitle>Pixel Details</DialogTitle>
                         <DialogDescription>
-                            View this pixel's information or report it if necessary.
+                            View this pixel&apos;s information or report it if necessary.
                         </DialogDescription>
                     </DialogHeader>
 

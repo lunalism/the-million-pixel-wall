@@ -1,29 +1,17 @@
+// app/admin/reports/page.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
-
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
-} from "@/components/ui/dialog";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2, Trash2, Check } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
 
+// 🔍 Report 타입 정의
 type Report = {
   id: string;
   reason: string;
@@ -38,6 +26,21 @@ type Report = {
   };
 };
 
+// 🛠 Supabase 원시 데이터 타입
+type RawReport = {
+  id: string;
+  reason: string;
+  status: string;
+  created_at: string;
+  pixels: {
+    id: string;
+    x: number;
+    y: number;
+    image_url: string;
+    name: string;
+  }[];
+};
+
 export default function AdminReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +48,7 @@ export default function AdminReportsPage() {
   const [targetPixelId, setTargetPixelId] = useState<string | null>(null);
   const [targetReportId, setTargetReportId] = useState<string | null>(null);
 
-  // 상태별로 신고 불러오기
+  // 🔄 상태별로 신고 불러오기
   const fetchReports = async (status: string) => {
     setLoading(true);
     const { data, error } = await supabase
@@ -55,11 +58,11 @@ export default function AdminReportsPage() {
       .order("created_at", { ascending: false });
 
     if (!error && data) {
-      const normalized = (data as any[]).map((item) => ({
+      const normalized: Report[] = (data as RawReport[]).map((item) => ({
         ...item,
-        pixels: Array.isArray(item.pixels) ? item.pixels[0] : item.pixels,
+        pixels: item.pixels[0],
       }));
-      setReports(normalized as Report[]);
+      setReports(normalized);
     }
 
     setLoading(false);
@@ -75,7 +78,6 @@ export default function AdminReportsPage() {
       toast.error("픽셀 삭제 중 오류가 발생했습니다.");
       return;
     }
-
     toast.success("픽셀이 성공적으로 삭제되었습니다.");
     setTargetPixelId(null);
     fetchReports(statusFilter);
@@ -91,7 +93,6 @@ export default function AdminReportsPage() {
       toast.error("승인 처리 중 오류가 발생했습니다.");
       return;
     }
-
     toast.success("신고가 승인 처리되었습니다.");
     setTargetReportId(null);
     fetchReports(statusFilter);
@@ -99,30 +100,19 @@ export default function AdminReportsPage() {
 
   return (
     <div className="space-y-6">
-      {/* 타이틀 */}
       <div className="space-y-1">
         <h2 className="text-3xl font-bold tracking-tight">Reports</h2>
         <p className="text-muted-foreground">Review and manage reported pixels.</p>
       </div>
 
-      {/* 상태 필터 탭 */}
       <div className="flex gap-2">
         {(["pending", "approved", "removed"] as const).map((status) => (
-          <Button
-            key={status}
-            variant={statusFilter === status ? "default" : "outline"}
-            onClick={() => setStatusFilter(status)}
-          >
-            {{
-              pending: "Pending",
-              approved: "Approved",
-              removed: "Deleted"
-            }[status]}
+          <Button key={status} variant={statusFilter === status ? "default" : "outline"} onClick={() => setStatusFilter(status)}>
+            {{ pending: "Pending", approved: "Approved", removed: "Deleted" }[status]}
           </Button>
         ))}
       </div>
 
-      {/* 리스트 */}
       {loading ? (
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="animate-spin h-4 w-4" />
@@ -140,22 +130,13 @@ export default function AdminReportsPage() {
                 <CardTitle>
                   🚩 Pixel at ({report.pixels.x}, {report.pixels.y})
                 </CardTitle>
-
-                {/* 버튼: 승인 or 삭제 */}
                 <div className="flex gap-2">
                   {statusFilter === "pending" && (
                     <>
-                      {/* 승인 버튼 */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-                            size="sm"
-                            onClick={() => setTargetReportId(report.id)}
-                          >
-                            <Check className="w-4 h-4 mr-1" />
-                            승인
+                          <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50" size="sm" onClick={() => setTargetReportId(report.id)}>
+                            <Check className="w-4 h-4 mr-1" /> 승인
                           </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -181,16 +162,10 @@ export default function AdminReportsPage() {
                         </DialogContent>
                       </Dialog>
 
-                      {/* 삭제 버튼 */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => setTargetPixelId(report.pixels.id)}
-                          >
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            삭제
+                          <Button variant="destructive" size="sm" onClick={() => setTargetPixelId(report.pixels.id)}>
+                            <Trash2 className="w-4 h-4 mr-1" /> 삭제
                           </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -204,12 +179,7 @@ export default function AdminReportsPage() {
                             <Button variant="outline" onClick={() => setTargetPixelId(null)}>
                               취소
                             </Button>
-                            <Button
-                              variant="destructive"
-                              onClick={() => {
-                                if (targetPixelId) handleDeletePixel(targetPixelId);
-                              }}
-                            >
+                            <Button variant="destructive" onClick={() => { if (targetPixelId) handleDeletePixel(targetPixelId); }}>
                               삭제 확정
                             </Button>
                           </DialogFooter>
@@ -221,14 +191,14 @@ export default function AdminReportsPage() {
               </CardHeader>
 
               <CardContent className="flex items-center gap-4">
-                <img
-                  src={report.pixels.image_url}
-                  alt="pixel"
-                  className="w-16 h-16 border rounded object-cover"
-                />
+                <Image src={report.pixels.image_url} alt="pixel" width={64} height={64} className="w-16 h-16 border rounded object-cover"/>
                 <div className="text-sm space-y-1">
-                  <p><strong>이름:</strong> {report.pixels.name}</p>
-                  <p><strong>신고 사유:</strong> {report.reason}</p>
+                  <p>
+                    <strong>이름:</strong> {report.pixels.name}
+                  </p>
+                  <p>
+                    <strong>신고 사유:</strong> {report.reason}
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {new Date(report.created_at).toLocaleString()}
                   </p>

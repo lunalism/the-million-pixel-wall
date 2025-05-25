@@ -1,20 +1,14 @@
-// components/admin/EditPixelModal.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
+import Image from "next/image";
 import type { Pixel } from "@/app/admin/pixels/columns";
 
 interface EditPixelModalProps {
@@ -24,18 +18,12 @@ interface EditPixelModalProps {
   onPixelUpdated: () => void;
 }
 
-export function EditPixelModal({
-  open,
-  onClose,
-  pixel,
-  onPixelUpdated,
-}: EditPixelModalProps) {
+export function EditPixelModal({ open, onClose, pixel, onPixelUpdated }: EditPixelModalProps) {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 픽셀 데이터가 변경될 때마다 입력 초기화
   useEffect(() => {
     if (pixel) {
       setName(pixel.name);
@@ -44,7 +32,6 @@ export function EditPixelModal({
     }
   }, [pixel]);
 
-  // 픽셀 업데이트 핸들러
   const handleUpdate = async () => {
     if (!pixel) return;
     setLoading(true);
@@ -65,7 +52,7 @@ export function EditPixelModal({
       toast.error("Failed to update pixel.");
     } else {
       toast.success("✅ Pixel updated successfully!");
-      onPixelUpdated(); // 상위에서 목록 새로고침 등 처리
+      onPixelUpdated();
       onClose();
     }
   };
@@ -85,24 +72,18 @@ export function EditPixelModal({
 
           <div>
             <Label htmlFor="message">Message</Label>
-            <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)}/>
           </div>
 
           <div>
             <Label htmlFor="image_url">Image URL</Label>
-            <Input
-              id="image_url"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-            />
+            <Input id="image_url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}/>
           </div>
 
           {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Preview"
-              className="mt-2 max-h-48 rounded border object-contain"
-            />
+            <div className="relative mt-2 w-full h-48 border rounded overflow-hidden">
+              <Image src={imageUrl} alt="Preview" fill className="object-contain" sizes="(max-width: 640px) 100vw, 50vw"/>
+            </div>
           )}
         </div>
 
