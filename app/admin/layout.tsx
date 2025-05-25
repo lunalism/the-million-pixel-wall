@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button"; // ✅ 버튼 import
 const navItems = [
   { name: "Home", href: "/" },
   { name: "Overview", href: "/admin" },
+  { name: "About", href: "/admin/about" },
+  { name: "FAQ", href: "/admin/faq" },
   { name: "Pixels", href: "/admin/pixels" },
   { name: "Reports", href: "/admin/reports" },
   { name: "Forbidden Words", href: "/admin/forbidden-words" },
