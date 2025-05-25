@@ -8,7 +8,6 @@ const navItems = [
     { name: "HOME", href: "/" },
     { name: "ABOUT", href: "/about" },
     { name: "FAQ", href: "/faq" },
-    { name: "ADMIN", href: "/admin" },
 ];
 
 export function TopNav() {
