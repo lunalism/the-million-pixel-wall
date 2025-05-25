@@ -1,4 +1,3 @@
-// components/faq/FAQContent.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,52 +8,58 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { MailIcon } from "lucide-react";
 
-type FAQ = {
-  id: number;
+type Faq = {
+  id: string;
   question: string;
   answer: string;
 };
 
 export function FAQContent() {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [faqs, setFaqs] = useState<Faq[]>([]);
 
-  // 🔄 Supabase에서 FAQ 데이터를 불러오는 함수
   useEffect(() => {
     const fetchFaqs = async () => {
-      const { data, error } = await supabase
-        .from("faq")
-        .select("*")
-        .order("id", { ascending: true });
-
+      const { data, error } = await supabase.from("faq").select("*").order("id");
       if (error) {
-        console.error("Failed to fetch FAQs:", error);
+        console.error("Error fetching FAQs:", error);
       } else {
-        setFaqs(data || []);
+        setFaqs(data);
       }
-      setLoading(false);
     };
-
     fetchFaqs();
   }, []);
 
   return (
-    <section className="max-w-screen-md mx-auto px-4 md:px-8 py-12">
-      <h2 className="text-2xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
+    <section className="max-w-screen-xl mx-auto px-4 md:px-8 mt-12">
+      <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
 
-      {loading ? (
-        <p className="text-center text-muted-foreground">Loading FAQs...</p>
-      ) : (
+      <div className="grid md:grid-cols-[400px_1fr] gap-8 items-start">
+        {/* 📬 연락처 섹션 */}
+        <div className="bg-muted/50 p-6 rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">Can't find your answer?</h3>
+          <p className="text-muted-foreground mb-4">
+            Feel free to reach out to us directly if your question isn't listed here.
+          </p>
+          <div className="flex items-center gap-2 text-sm text-primary font-medium">
+            <MailIcon className="w-4 h-4" />
+            <a href="mailto:hello@millionpixelwall.com" className="underline hover:no-underline">
+              hello@millionpixelwall.com
+            </a>
+          </div>
+        </div>
+
+        {/* 📖 FAQ 리스트 */}
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq) => (
-            <AccordionItem key={faq.id} value={`faq-${faq.id}`}>
-              <AccordionTrigger className="text-left text-base font-medium">{faq.question}</AccordionTrigger>
+            <AccordionItem key={faq.id} value={faq.id}>
+              <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
               <AccordionContent className="text-muted-foreground">{faq.answer}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
-      )}
+      </div>
     </section>
   );
 }
