@@ -16,7 +16,7 @@ export interface PurchasedPixelProps {
   onClick?: () => void; // ✅ 클릭 핸들러 (선택적)
 }
 
-export function PurchasedPixel({ x, y, size, imageUrl, name, message, left, top, onClick }: PurchasedPixelProps) {
+export function PurchasedPixel({ size, imageUrl, name, message, left, top, onClick }: PurchasedPixelProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
