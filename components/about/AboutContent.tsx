@@ -23,7 +23,7 @@ export function AboutContent() {
         const { data, error } = await supabase
             .from("about")
             .select("*")
-            .order("order_index", { ascending: true });
+            .order("sort_order", { ascending: true });
 
         if (error) {
             console.error("❌ Failed to load about sections:", error);
