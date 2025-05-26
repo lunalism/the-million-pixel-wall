@@ -44,7 +44,7 @@ export function AboutContent() {
   }
 
   return (
-    <section className="max-w-screen-xl mx-auto px-4 md:px-8 mt-12">
+    <section className="max-w-screen-xl mx-auto px-4 md:px-8 mt-12 pb-24">
         <h2 className="text-2xl font-bold mb-6">About This Project</h2>
 
         <Tabs defaultValue={defaultValue} className="w-full grid md:grid-cols-4 gap-8 items-start">
