@@ -66,7 +66,10 @@ export function AboutContent() {
             {sections.map((section) => (
                 <TabsContent key={section.slug} value={section.slug}>
                     <h3 className="text-lg font-semibold mb-2">{section.heading}</h3>
-                    <p className="text-muted-foreground">{section.content}</p>
+                    <div
+                        className="text-muted-foreground leading-relaxed space-y-2"
+                        dangerouslySetInnerHTML={{ __html: section.content }}
+                    />
                 </TabsContent>
             ))}
             </div>
