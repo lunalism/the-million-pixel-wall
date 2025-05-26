@@ -16,7 +16,7 @@ export function FAQContent() {
 
     useEffect(() => {
         const fetchFaqs = async () => {
-            const { data, error } = await supabase.from("faq").select("*").order("id");
+            const { data, error } = await supabase.from("faq").select("*").order("sort_order");
             if (error) {
                 console.error("Error fetching FAQs:", error);
             } else {
