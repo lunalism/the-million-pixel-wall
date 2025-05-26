@@ -61,12 +61,14 @@ export function FAQContent() {
 
                 {/* 📖 FAQ 리스트 */}
                 <Accordion type="single" collapsible className="w-full">
-                    {faqs.map((faq) => (
-                        <AccordionItem key={faq.id} value={faq.id}>
+                {faqs.map((faq) => (
+                    <AccordionItem key={faq.id} value={faq.id}>
                         <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                        <AccordionContent className="text-muted-foreground">{faq.answer}</AccordionContent>
-                        </AccordionItem>
-                    ))}
+                        <AccordionContent className="text-muted-foreground">
+                            <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                        </AccordionContent>
+                    </AccordionItem>
+                ))}
                 </Accordion>
             </div>
         </section>
