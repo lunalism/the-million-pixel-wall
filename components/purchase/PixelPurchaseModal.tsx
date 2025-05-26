@@ -245,14 +245,14 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
         <div className="grid gap-4 py-4">
           {/* 이름 */}
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label className="pb-2" htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             {submitted && !name.trim() && <p className="text-sm text-red-500 mt-1">Name is required.</p>}
           </div>
 
           {/* 메시지 */}
           <div>
-            <Label htmlFor="message">Message</Label>
+            <Label className="pb-2" htmlFor="message">Message</Label>
             <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
             {submitted && !message.trim() && <p className="text-sm text-red-500 mt-1">Message is required.</p>}
           </div>
