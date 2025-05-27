@@ -156,7 +156,7 @@ export function PixelGrid() {
       />
 
       {/* 🚨 신고 모달 */}
-      {selectedPurchasedPixel && (
+      {selectedPurchasedPixel && !isCountryModalOpen && (
         <PurchasedPixelModal
           open={isPurchasedModalOpen}
           onClose={handleClosePurchasedModal}
