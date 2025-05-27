@@ -232,7 +232,7 @@ export function PixelPurchaseModal({ open, onClose, selectedPixel, onPurchaseSuc
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md min-h-[600px]">
         <DialogHeader>
           <DialogTitle>
             Buy Pixel at ({selectedPixel.x}, {selectedPixel.y})
