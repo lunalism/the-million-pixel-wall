@@ -4,36 +4,24 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { supabase } from "@/lib/supabaseClient";
-import { PixelPurchaseModal } from "@/components/purchase/PixelPurchaseModal";
 import { PurchasedPixelModal } from "@/components/pixels/PurchasedPixelModal";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { CountrySelectModal } from "@/components/purchase/CountrySelectModal";
+import type { PixelData } from "@/types/pixel";
 
 const GRID_SIZE = 1000;
 const PIXEL_SIZE = 10;
-
-interface PixelData {
-  id: string;
-  x: number;
-  y: number;
-  name: string;
-  message: string;
-  image_url: string;
-  created_at: string;
-  width?: number;
-  height?: number;
-}
 
 export function PixelGrid() {
   const parentRef = useRef<HTMLDivElement>(null);
 
   const [purchasedPixels, setPurchasedPixels] = useState<PixelData[]>([]);
   const [selectedPixel, setSelectedPixel] = useState<{ x: number; y: number } | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCountryModalOpen, setIsCountryModalOpen] = useState(false);
 
   const [selectedPurchasedPixel, setSelectedPurchasedPixel] = useState<PixelData | null>(null);
   const [isPurchasedModalOpen, setIsPurchasedModalOpen] = useState(false);
 
-  // 🔄 Supabase에서 픽셀 데이터 로드
   useEffect(() => {
     const fetchPixels = async () => {
       const { data, error } = await supabase.from("pixels").select("*");
@@ -44,7 +32,6 @@ export function PixelGrid() {
     return () => clearInterval(interval);
   }, []);
 
-  // 🖱️ 빈 픽셀 클릭 → 구매 모달
   const handlePixelClick = (x: number, y: number) => {
     const isCovered = purchasedPixels.some((p) => {
       const w = p.width ?? 1;
@@ -54,23 +41,21 @@ export function PixelGrid() {
     if (isCovered) return;
 
     setSelectedPixel({ x, y });
-    setIsModalOpen(true);
+    setIsCountryModalOpen(true);
   };
 
-  // 🖱️ 구매된 픽셀 클릭 → 신고 모달
   const handlePurchasedPixelClick = (pixel: PixelData) => {
     setSelectedPurchasedPixel(pixel);
     setIsPurchasedModalOpen(true);
   };
 
-  // ✅ 구매 완료 시 상태에 반영
   const handlePixelPurchase = (newPixels: PixelData[]) => {
     setPurchasedPixels((prev) => [...prev, ...newPixels]);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseCountryModal = () => {
     setSelectedPixel(null);
-    setIsModalOpen(false);
+    setIsCountryModalOpen(false);
   };
 
   const handleClosePurchasedModal = () => {
@@ -78,7 +63,6 @@ export function PixelGrid() {
     setIsPurchasedModalOpen(false);
   };
 
-  // 🎯 가상 스크롤 설정
   const rowVirtualizer = useVirtualizer({
     count: GRID_SIZE,
     getScrollElement: () => parentRef.current,
@@ -96,7 +80,6 @@ export function PixelGrid() {
 
   return (
     <>
-      {/* 🖼️ 픽셀 그리드 */}
       <div className="w-full flex justify-center overflow-auto py-10">
         <div
           ref={parentRef}
@@ -110,7 +93,6 @@ export function PixelGrid() {
             }}
           >
             <TooltipProvider>
-              {/* ✅ 구매된 픽셀 표시 */}
               {purchasedPixels.map((pixel) => {
                 const { x, y, width = 1, height = 1 } = pixel;
                 return (
@@ -132,7 +114,6 @@ export function PixelGrid() {
                 );
               })}
 
-              {/* 🟩 빈 픽셀 표시 */}
               {rowVirtualizer.getVirtualItems().map((row) =>
                 columnVirtualizer.getVirtualItems().map((column) => {
                   const x = column.index;
@@ -166,10 +147,10 @@ export function PixelGrid() {
         </div>
       </div>
 
-      {/* 💸 구매 모달 */}
-      <PixelPurchaseModal
-        open={isModalOpen}
-        onClose={handleCloseModal}
+      {/* 🌏 국가 선택 모달 → 내부에서 구매 or 한국 안내 분기 */}
+      <CountrySelectModal
+        open={isCountryModalOpen}
+        onClose={handleCloseCountryModal}
         selectedPixel={selectedPixel}
         onPurchaseSuccess={handlePixelPurchase}
       />
