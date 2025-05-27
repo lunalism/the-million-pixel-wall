@@ -7,17 +7,30 @@ import { supabase } from "@/lib/supabaseClient";
 import { PurchasedPixelModal } from "@/components/pixels/PurchasedPixelModal";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CountrySelectModal } from "@/components/purchase/CountrySelectModal";
-import type { PixelData } from "@/types/pixel";
+import { PixelPurchaseModal } from "@/components/purchase/PixelPurchaseModal";
 
 const GRID_SIZE = 1000;
 const PIXEL_SIZE = 10;
+
+interface PixelData {
+  id: string;
+  x: number;
+  y: number;
+  name: string;
+  message: string;
+  image_url: string;
+  created_at: string;
+  width?: number;
+  height?: number;
+}
 
 export function PixelGrid() {
   const parentRef = useRef<HTMLDivElement>(null);
 
   const [purchasedPixels, setPurchasedPixels] = useState<PixelData[]>([]);
   const [selectedPixel, setSelectedPixel] = useState<{ x: number; y: number } | null>(null);
-  const [isCountryModalOpen, setIsCountryModalOpen] = useState(false);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showCountryModal, setShowCountryModal] = useState(false);
 
   const [selectedPurchasedPixel, setSelectedPurchasedPixel] = useState<PixelData | null>(null);
   const [isPurchasedModalOpen, setIsPurchasedModalOpen] = useState(false);
@@ -41,7 +54,7 @@ export function PixelGrid() {
     if (isCovered) return;
 
     setSelectedPixel({ x, y });
-    setIsCountryModalOpen(true);
+    setShowCountryModal(true);
   };
 
   const handlePurchasedPixelClick = (pixel: PixelData) => {
@@ -53,14 +66,23 @@ export function PixelGrid() {
     setPurchasedPixels((prev) => [...prev, ...newPixels]);
   };
 
-  const handleCloseCountryModal = () => {
+  const handleClosePurchaseModal = () => {
     setSelectedPixel(null);
-    setIsCountryModalOpen(false);
+    setShowPurchaseModal(false);
+  };
+
+  const handleCloseCountryModal = () => {
+    setShowCountryModal(false);
   };
 
   const handleClosePurchasedModal = () => {
     setSelectedPurchasedPixel(null);
     setIsPurchasedModalOpen(false);
+  };
+
+  const handleConfirmNonKorean = () => {
+    setShowCountryModal(false);
+    setShowPurchaseModal(true);
   };
 
   const rowVirtualizer = useVirtualizer({
@@ -147,16 +169,27 @@ export function PixelGrid() {
         </div>
       </div>
 
-      {/* 🌏 국가 선택 모달 → 내부에서 구매 or 한국 안내 분기 */}
+      {/* 🌏 국가 선택 모달 */}
       <CountrySelectModal
-        open={isCountryModalOpen}
+        open={showCountryModal}
         onClose={handleCloseCountryModal}
         selectedPixel={selectedPixel}
-        onPurchaseSuccess={handlePixelPurchase}
+        onProceed={handleConfirmNonKorean}
+        onPurchaseSuccess={handlePixelPurchase} // 🔥 이거 추가
       />
 
+      {/* 💸 구매 모달 */}
+      {selectedPixel && showPurchaseModal && (
+        <PixelPurchaseModal
+          open={true}
+          onClose={handleClosePurchaseModal}
+          selectedPixel={selectedPixel}
+          onPurchaseSuccess={handlePixelPurchase}
+        />
+      )}
+
       {/* 🚨 신고 모달 */}
-      {selectedPurchasedPixel && !isCountryModalOpen && (
+      {selectedPurchasedPixel && (
         <PurchasedPixelModal
           open={isPurchasedModalOpen}
           onClose={handleClosePurchasedModal}
