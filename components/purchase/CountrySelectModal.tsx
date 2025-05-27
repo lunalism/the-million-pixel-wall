@@ -43,10 +43,10 @@ export function CountrySelectModal({ open, onClose, selectedPixel, onPurchaseSuc
 
                     <DialogFooter className="flex justify-end gap-2 pt-4">
                         <Button variant="outline" onClick={handleYes}>
-                            🇰🇷 Yes, I'm in Korea
+                            🇰🇷 Yes, I&apos;m in Korea
                         </Button>
                         <Button onClick={handleNo}>
-                            🌐 No, I'm not in Korea
+                            🌐 No, I&apos;m not in Korea
                         </Button>
                     </DialogFooter>
                 </DialogContent>
