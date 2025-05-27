@@ -173,9 +173,7 @@ export function PixelGrid() {
       <CountrySelectModal
         open={showCountryModal}
         onClose={handleCloseCountryModal}
-        selectedPixel={selectedPixel}
         onProceed={handleConfirmNonKorean}
-        onPurchaseSuccess={handlePixelPurchase} // 🔥 이거 추가
       />
 
       {/* 💸 구매 모달 */}
