@@ -13,12 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { KoreanPurchaseInfoModal } from "./KoreanPurchaseInfoModal";
 import { PixelPurchaseModal } from "@/components/purchase/PixelPurchaseModal";
+import type { PixelData } from "@/types/pixel";
 
 interface CountrySelectModalProps {
   open: boolean;
   onClose: () => void;
   selectedPixel: { x: number; y: number } | null;
-  onPurchaseSuccess: (pixels: any[]) => void;
+  onPurchaseSuccess: (pixels: PixelData[]) => void;
   onProceed: () => void; // ✅ 새로 추가된 prop
 }
 
